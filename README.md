@@ -1,17 +1,17 @@
-# chat_app
+# Chat App
 
-A new Flutter project.
+[![CI](https://github.com/karansnarula/chat-app/actions/workflows/ci.yml/badge.svg)](https://github.com/karansnarula/chat-app/actions/workflows/ci.yml)
 
-## Getting Started
+Real-time chat application built with Flutter — friends, one-on-one conversations, live messaging over WebSocket, and push notifications. Consumes the [chat-app-api](https://github.com/karansnarula/chat-app-api) NestJS backend.
 
-This project is a starting point for a Flutter application.
+> 🚧 Work in progress — full README (architecture, screenshots, setup) lands with the final phase.
 
-A few resources to get you started if this is your first Flutter project:
+## Development
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```sh
+flutter pub get
+dart run build_runner build --delete-conflicting-outputs
+flutter run
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Generated code (`*.g.dart`, `*.config.dart`) is not committed; run `build_runner` after checkout. CI (GitHub Actions) analyzes, tests, and builds every push/PR to `develop`/`main`, and distributes Android builds to testers via Firebase App Distribution on pushes to `develop`.
