@@ -72,6 +72,20 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-sa.json"
 
+      - name: Validate service account key
+        run: |
+          python3 - <<'EOF'
+          import json, os, sys
+          path = os.path.join(os.environ["RUNNER_TEMP"], "firebase-sa.json")
+          if os.path.getsize(path) == 0:
+              sys.exit("FIREBASE_SERVICE_ACCOUNT secret is empty or missing — check the secret name and value.")
+          try:
+              data = json.load(open(path))
+          except json.JSONDecodeError as e:
+              sys.exit(f"FIREBASE_SERVICE_ACCOUNT secret is not valid JSON: {e}")
+          print("Service account JSON OK for project:", data.get("project_id"))
+          EOF
+
       - name: Upload to Firebase App Distribution
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-sa.json
