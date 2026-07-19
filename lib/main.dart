@@ -1,26 +1,27 @@
-import 'package:chat_app/core/constants/app_colors.dart';
-import 'package:chat_app/core/constants/app_strings.dart';
+import 'package:chat_app/core/di/injection.dart';
+import 'package:chat_app/core/l10n/generated/app_localizations.dart';
+import 'package:chat_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await configureDependencies();
   runApp(const ChatApp());
 }
 
-/// Root widget. Placeholder shell until the router, theme, and DI wiring
-/// land in the core-infrastructure phase.
 class ChatApp extends StatelessWidget {
   const ChatApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppStrings.appName,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
-      ),
-      home: const Scaffold(
-        body: Center(child: Text(AppStrings.appName)),
-      ),
+    return MaterialApp.router(
+      onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      routerConfig: getIt<GoRouter>(),
     );
   }
 }

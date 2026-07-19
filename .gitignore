@@ -47,3 +47,4 @@ app.*.map.json
 # Generated code (recreated by build_runner; CI runs it)
 *.g.dart
 *.config.dart
+lib/core/l10n/generated/

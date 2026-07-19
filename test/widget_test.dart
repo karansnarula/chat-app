@@ -1,11 +1,30 @@
-import 'package:chat_app/core/constants/app_strings.dart';
+import 'package:chat_app/core/di/injection.dart';
 import 'package:chat_app/main.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
-  testWidgets('app boots and shows the placeholder shell', (tester) async {
-    await tester.pumpWidget(const ChatApp());
+  setUp(() {
+    getIt.registerSingleton<GoRouter>(
+      GoRouter(
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) =>
+                const Scaffold(body: Center(child: Text('home'))),
+          ),
+        ],
+      ),
+    );
+  });
 
-    expect(find.text(AppStrings.appName), findsOneWidget);
+  tearDown(getIt.reset);
+
+  testWidgets('app boots with theme, l10n, and router wired', (tester) async {
+    await tester.pumpWidget(const ChatApp());
+    await tester.pumpAndSettle();
+
+    expect(find.text('home'), findsOneWidget);
   });
 }

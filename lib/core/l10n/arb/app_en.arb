@@ -1,0 +1,19 @@
+{
+  "@@locale": "en",
+  "appTitle": "Chat App",
+  "login": "Log In",
+  "register": "Create Account",
+  "email": "Email",
+  "password": "Password",
+  "displayName": "Display name",
+  "chats": "Chats",
+  "settings": "Settings",
+  "friendRequests": "Friend Requests",
+  "conversation": "Conversation",
+  "retry": "Try Again",
+  "errorGenericTitle": "Something went wrong",
+  "errorGenericMessage": "An unexpected error occurred. Please try again.",
+  "errorNetworkTitle": "No connection",
+  "errorNetworkMessage": "Check your internet connection and try again.",
+  "sessionExpired": "Your session has expired. Please log in again."
+}

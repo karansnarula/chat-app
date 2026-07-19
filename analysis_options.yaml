@@ -6,7 +6,7 @@ analyzer:
     - "**/*.g.dart"
     - "**/*.config.dart"
     - "lib/firebase_options.dart"
-    - "lib/l10n/generated/**"
+    - "lib/core/l10n/generated/**"
 
 linter:
   rules:

@@ -1,0 +1,19 @@
+{
+  "@@locale": "th",
+  "appTitle": "Chat App",
+  "login": "เข้าสู่ระบบ",
+  "register": "สร้างบัญชี",
+  "email": "อีเมล",
+  "password": "รหัสผ่าน",
+  "displayName": "ชื่อที่แสดง",
+  "chats": "แชท",
+  "settings": "การตั้งค่า",
+  "friendRequests": "คำขอเป็นเพื่อน",
+  "conversation": "บทสนทนา",
+  "retry": "ลองอีกครั้ง",
+  "errorGenericTitle": "เกิดข้อผิดพลาด",
+  "errorGenericMessage": "มีข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง",
+  "errorNetworkTitle": "ไม่มีการเชื่อมต่อ",
+  "errorNetworkMessage": "กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองอีกครั้ง",
+  "sessionExpired": "เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง"
+}
