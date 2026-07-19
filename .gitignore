@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Generated code (recreated by build_runner; CI runs it)
+*.g.dart
+*.config.dart
