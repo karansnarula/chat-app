@@ -1,4 +1,5 @@
 import 'package:chat_app/core/error/app_exception.dart';
+import 'package:chat_app/core/error/result.dart';
 import 'package:chat_app/core/network/session_manager.dart';
 import 'package:chat_app/core/storage/token_storage.dart';
 import 'package:chat_app/features/auth/data/datasources/auth_api.dart';
@@ -6,6 +7,7 @@ import 'package:chat_app/features/auth/data/models/auth_response_dto.dart';
 import 'package:chat_app/features/auth/data/models/login_request_dto.dart';
 import 'package:chat_app/features/auth/data/models/user_dto.dart';
 import 'package:chat_app/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:chat_app/features/auth/domain/entities/auth_user.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -41,7 +43,8 @@ void main() {
 
   tearDown(() => sessionManager.dispose());
 
-  test('login saves tokens and returns the user entity', () async {
+  test('login saves tokens and returns Success with the user entity',
+      () async {
     when(() => api.login(any())).thenAnswer((_) async => response);
     when(
       () => tokenStorage.saveTokens(
@@ -50,11 +53,12 @@ void main() {
       ),
     ).thenAnswer((_) async {});
 
-    final user = await repository.login(
+    final result = await repository.login(
       email: 'k@n.com',
       password: 'password1',
     );
 
+    final user = (result as Success<AuthUser>).value;
     expect(user.id, 'u1');
     expect(user.displayName, 'Karan');
     verify(
@@ -65,7 +69,7 @@ void main() {
     ).called(1);
   });
 
-  test('login maps DioException to AppException', () async {
+  test('login returns Failure with the mapped AppException', () async {
     when(() => api.login(any())).thenThrow(
       DioException(
         requestOptions: RequestOptions(),
@@ -78,14 +82,18 @@ void main() {
       ),
     );
 
-    expect(
-      () => repository.login(email: 'k@n.com', password: 'nope'),
-      throwsA(
-        isA<UnauthorizedException>().having(
-          (e) => e.message,
-          'message',
-          'Invalid credentials',
-        ),
+    final result = await repository.login(
+      email: 'k@n.com',
+      password: 'nope',
+    );
+
+    final exception = (result as Failure).exception;
+    expect(exception, isA<UnauthorizedException>());
+    expect(exception.message, 'Invalid credentials');
+    verifyNever(
+      () => tokenStorage.saveTokens(
+        accessToken: any(named: 'accessToken'),
+        refreshToken: any(named: 'refreshToken'),
       ),
     );
   });

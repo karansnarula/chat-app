@@ -1,9 +1,13 @@
+import 'package:chat_app/core/error/result.dart';
 import 'package:chat_app/features/auth/domain/entities/auth_user.dart';
 
 abstract interface class AuthRepository {
-  Future<AuthUser> login({required String email, required String password});
+  Future<Result<AuthUser>> login({
+    required String email,
+    required String password,
+  });
 
-  Future<AuthUser> register({
+  Future<Result<AuthUser>> register({
     required String email,
     required String password,
     required String displayName,

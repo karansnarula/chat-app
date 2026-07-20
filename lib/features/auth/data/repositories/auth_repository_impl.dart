@@ -1,4 +1,5 @@
 import 'package:chat_app/core/error/api_guard.dart';
+import 'package:chat_app/core/error/result.dart';
 import 'package:chat_app/core/network/session_manager.dart';
 import 'package:chat_app/core/storage/token_storage.dart';
 import 'package:chat_app/features/auth/data/datasources/auth_api.dart';
@@ -18,7 +19,7 @@ class AuthRepositoryImpl implements AuthRepository {
   final SessionManager _sessionManager;
 
   @override
-  Future<AuthUser> login({
+  Future<Result<AuthUser>> login({
     required String email,
     required String password,
   }) =>
@@ -27,7 +28,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
   @override
-  Future<AuthUser> register({
+  Future<Result<AuthUser>> register({
     required String email,
     required String password,
     required String displayName,
@@ -42,15 +43,19 @@ class AuthRepositoryImpl implements AuthRepository {
         ),
       );
 
-  Future<AuthUser> _authenticate(
+  Future<Result<AuthUser>> _authenticate(
     Future<AuthResponseDto> Function() request,
   ) async {
-    final response = await guard(request);
-    await _tokenStorage.saveTokens(
-      accessToken: response.accessToken,
-      refreshToken: response.refreshToken,
-    );
-    return response.user.toEntity();
+    switch (await guard(request)) {
+      case Success(:final value):
+        await _tokenStorage.saveTokens(
+          accessToken: value.accessToken,
+          refreshToken: value.refreshToken,
+        );
+        return Success(value.user.toEntity());
+      case Failure(:final exception):
+        return Failure(exception);
+    }
   }
 
   @override

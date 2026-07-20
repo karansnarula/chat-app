@@ -1,3 +1,4 @@
+import 'package:chat_app/core/error/result.dart';
 import 'package:chat_app/features/auth/domain/entities/auth_user.dart';
 import 'package:chat_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:injectable/injectable.dart';
@@ -10,6 +11,9 @@ class LoginUseCase {
 
   final AuthRepository _repository;
 
-  Future<AuthUser> call({required String email, required String password}) =>
+  Future<Result<AuthUser>> call({
+    required String email,
+    required String password,
+  }) =>
       _repository.login(email: email, password: password);
 }

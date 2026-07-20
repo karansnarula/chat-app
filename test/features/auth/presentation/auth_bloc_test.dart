@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:chat_app/core/error/app_exception.dart';
+import 'package:chat_app/core/error/result.dart';
 import 'package:chat_app/features/auth/domain/entities/auth_user.dart';
 import 'package:chat_app/features/auth/domain/usecases/check_session_use_case.dart';
 import 'package:chat_app/features/auth/domain/usecases/login_use_case.dart';
@@ -74,7 +75,7 @@ void main() {
       build: buildBloc,
       setUp: () => when(
         () => login(email: 'k@n.com', password: 'password1'),
-      ).thenAnswer((_) async => user),
+      ).thenAnswer((_) async => const Success(user)),
       act: (bloc) => bloc.add(
         const AuthLoginSubmitted(email: 'k@n.com', password: 'password1'),
       ),
@@ -89,7 +90,10 @@ void main() {
       build: buildBloc,
       setUp: () => when(
         () => login(email: 'k@n.com', password: 'wrong'),
-      ).thenThrow(const UnauthorizedException('Invalid credentials')),
+      ).thenAnswer(
+        (_) async =>
+            const Failure(UnauthorizedException('Invalid credentials')),
+      ),
       act: (bloc) => bloc.add(
         const AuthLoginSubmitted(email: 'k@n.com', password: 'wrong'),
       ),
@@ -112,7 +116,7 @@ void main() {
           password: 'password1',
           displayName: 'Karan',
         ),
-      ).thenAnswer((_) async => user),
+      ).thenAnswer((_) async => const Success(user)),
       act: (bloc) => bloc.add(
         const AuthRegisterSubmitted(
           email: 'k@n.com',

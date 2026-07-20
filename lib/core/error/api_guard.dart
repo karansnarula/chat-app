@@ -1,12 +1,15 @@
 import 'package:chat_app/core/error/app_exception.dart';
+import 'package:chat_app/core/error/result.dart';
 import 'package:dio/dio.dart';
 
-/// Runs [request] and rethrows transport failures as [AppException]s so
+/// Runs [request] and captures failures as a typed [Result] so
 /// repositories never leak Dio types into the domain.
-Future<T> guard<T>(Future<T> Function() request) async {
+Future<Result<T>> guard<T>(Future<T> Function() request) async {
   try {
-    return await request();
+    return Success(await request());
   } on DioException catch (error) {
-    throw AppException.fromDio(error);
+    return Failure(AppException.fromDio(error));
+  } on Exception catch (error) {
+    return Failure(UnknownException(error.toString()));
   }
 }

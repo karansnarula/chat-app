@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:chat_app/core/error/app_exception.dart';
+import 'package:chat_app/core/error/result.dart';
 import 'package:chat_app/features/auth/domain/entities/auth_user.dart';
 import 'package:chat_app/features/auth/domain/usecases/check_session_use_case.dart';
 import 'package:chat_app/features/auth/domain/usecases/login_use_case.dart';
@@ -56,11 +57,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthState.unauthenticated(isSubmitting: true));
-    try {
-      final user = await _login(email: event.email, password: event.password);
-      emit(AuthState.authenticated(user));
-    } on AppException catch (failure) {
-      emit(AuthState.unauthenticated(failure: failure));
+    final result = await _login(email: event.email, password: event.password);
+    switch (result) {
+      case Success(:final value):
+        emit(AuthState.authenticated(value));
+      case Failure(:final exception):
+        emit(AuthState.unauthenticated(failure: exception));
     }
   }
 
@@ -69,15 +71,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthState.unauthenticated(isSubmitting: true));
-    try {
-      final user = await _register(
-        email: event.email,
-        password: event.password,
-        displayName: event.displayName,
-      );
-      emit(AuthState.authenticated(user));
-    } on AppException catch (failure) {
-      emit(AuthState.unauthenticated(failure: failure));
+    final result = await _register(
+      email: event.email,
+      password: event.password,
+      displayName: event.displayName,
+    );
+    switch (result) {
+      case Success(:final value):
+        emit(AuthState.authenticated(value));
+      case Failure(:final exception):
+        emit(AuthState.unauthenticated(failure: exception));
     }
   }
 
