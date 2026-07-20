@@ -15,5 +15,17 @@
   "errorGenericMessage": "มีข้อผิดพลาดที่ไม่คาดคิด กรุณาลองใหม่อีกครั้ง",
   "errorNetworkTitle": "ไม่มีการเชื่อมต่อ",
   "errorNetworkMessage": "กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ตแล้วลองอีกครั้ง",
-  "sessionExpired": "เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง"
+  "sessionExpired": "เซสชันหมดอายุ กรุณาเข้าสู่ระบบอีกครั้ง",
+  "welcomeTitle": "ยินดีต้อนรับกลับ",
+  "loginSubtitle": "เข้าสู่ระบบเพื่อแชทต่อ",
+  "registerSubtitle": "สมัครและเริ่มแชทกับเพื่อน",
+  "emailRequired": "กรุณากรอกอีเมล",
+  "emailInvalid": "กรุณากรอกอีเมลที่ถูกต้อง",
+  "passwordRequired": "กรุณากรอกรหัสผ่าน",
+  "passwordTooShort": "รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร",
+  "displayNameRequired": "กรุณากรอกชื่อที่แสดง",
+  "dontHaveAccount": "ยังไม่มีบัญชี?",
+  "alreadyHaveAccount": "มีบัญชีอยู่แล้ว?",
+  "signUp": "สมัครสมาชิก",
+  "logout": "ออกจากระบบ"
 }

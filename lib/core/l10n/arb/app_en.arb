@@ -15,5 +15,17 @@
   "errorGenericMessage": "An unexpected error occurred. Please try again.",
   "errorNetworkTitle": "No connection",
   "errorNetworkMessage": "Check your internet connection and try again.",
-  "sessionExpired": "Your session has expired. Please log in again."
+  "sessionExpired": "Your session has expired. Please log in again.",
+  "welcomeTitle": "Welcome back",
+  "loginSubtitle": "Log in to continue chatting",
+  "registerSubtitle": "Join and start chatting with friends",
+  "emailRequired": "Email is required",
+  "emailInvalid": "Enter a valid email",
+  "passwordRequired": "Password is required",
+  "passwordTooShort": "Password must be at least 8 characters",
+  "displayNameRequired": "Display name is required",
+  "dontHaveAccount": "Don't have an account?",
+  "alreadyHaveAccount": "Already have an account?",
+  "signUp": "Sign up",
+  "logout": "Log Out"
 }
