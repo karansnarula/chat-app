@@ -79,6 +79,22 @@ abstract final class AppTheme {
               : scheme.surfaceContainerHighest,
         ),
       ),
+      // WaveBottomBar reads its colors from this theme.
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        backgroundColor: scheme.surfaceContainerHighest,
+        selectedItemColor: scheme.primary,
+        unselectedItemColor: scheme.onSurfaceVariant,
+        selectedLabelStyle: TextStyle(
+          color: scheme.primary,
+          fontSize: AppFontSizes.xs,
+          fontWeight: FontWeight.w700,
+        ),
+        unselectedLabelStyle: TextStyle(
+          color: scheme.onSurfaceVariant,
+          fontSize: AppFontSizes.xs,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(

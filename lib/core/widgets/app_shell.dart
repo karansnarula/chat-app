@@ -1,23 +1,46 @@
-import 'dart:async';
-
+import 'package:chat_app/core/constants/app_dimens.dart';
+import 'package:chat_app/core/constants/app_durations.dart';
 import 'package:chat_app/core/l10n/generated/app_localizations.dart';
-import 'package:chat_app/core/widgets/glass_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wave_bottom_bar/bottom_bar.dart';
 
-/// Hosts the bottom-nav destinations. Content extends behind the floating
-/// bar so the frosted blur has something to work with.
-class AppShell extends StatelessWidget {
+/// Hosts the bottom-nav destinations.
+///
+/// [WaveBottomBar] owns its selected index internally, so external changes
+/// (deep links, programmatic navigation) are pushed in through
+/// [WaveBarController] rather than by rebuilding with a new index.
+class AppShell extends StatefulWidget {
   const AppShell({required this.navigationShell, super.key});
 
   final StatefulNavigationShell navigationShell;
 
+  @override
+  State<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends State<AppShell> {
+  final _barController = WaveBarController();
+
+  @override
+  void didUpdateWidget(AppShell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final index = widget.navigationShell.currentIndex;
+    if (index != oldWidget.navigationShell.currentIndex) {
+      _barController.animateToIndex(index);
+    }
+  }
+
+  @override
+  void dispose() {
+    _barController.dispose();
+    super.dispose();
+  }
+
   void _onDestinationSelected(int index) {
-    unawaited(HapticFeedback.selectionClick());
-    navigationShell.goBranch(
+    widget.navigationShell.goBranch(
       index,
-      initialLocation: index == navigationShell.currentIndex,
+      initialLocation: index == widget.navigationShell.currentIndex,
     );
   }
 
@@ -26,20 +49,28 @@ class AppShell extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      extendBody: true,
-      body: navigationShell,
-      bottomNavigationBar: GlassBottomNavBar(
-        currentIndex: navigationShell.currentIndex,
-        onDestinationSelected: _onDestinationSelected,
+      body: widget.navigationShell,
+      bottomNavigationBar: WaveBottomBar(
+        controller: _barController,
+        initialIndex: widget.navigationShell.currentIndex,
+        onTap: _onDestinationSelected,
+        height: AppDimens.navBarHeight,
+        amplitude: AppDimens.waveAmplitude,
+        waveLength: AppDimens.waveLength,
+        corner: const BorderRadius.vertical(
+          top: Radius.circular(AppDimens.radiusXl),
+        ),
+        duration: AppDurations.medium,
+        curve: Curves.easeOutCubic,
         items: [
-          GlassNavItem(
-            icon: Icons.chat_bubble_outline_rounded,
-            selectedIcon: Icons.chat_bubble_rounded,
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.chat_bubble_outline_rounded),
+            activeIcon: const Icon(Icons.chat_bubble_rounded),
             label: l10n.chats,
           ),
-          GlassNavItem(
-            icon: Icons.settings_outlined,
-            selectedIcon: Icons.settings_rounded,
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.settings_outlined),
+            activeIcon: const Icon(Icons.settings_rounded),
             label: l10n.settings,
           ),
         ],
