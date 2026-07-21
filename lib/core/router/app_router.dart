@@ -6,6 +6,7 @@ import 'package:chat_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:chat_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:chat_app/features/auth/presentation/screens/register_screen.dart';
 import 'package:chat_app/features/auth/presentation/screens/splash_screen.dart';
+import 'package:chat_app/features/chats/presentation/screens/chats_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -55,9 +56,7 @@ abstract final class AppRouter {
               routes: [
                 GoRoute(
                   path: AppRoutes.chats,
-                  builder: (context, state) => const _PlaceholderScreen(
-                    titleOf: _Title.chats,
-                  ),
+                  builder: (context, state) => const ChatsScreen(),
                   routes: [
                     GoRoute(
                       path: 'friend-requests',

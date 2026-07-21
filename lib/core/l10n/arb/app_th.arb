@@ -27,5 +27,9 @@
   "dontHaveAccount": "ยังไม่มีบัญชี?",
   "alreadyHaveAccount": "มีบัญชีอยู่แล้ว?",
   "signUp": "สมัครสมาชิก",
-  "logout": "ออกจากระบบ"
+  "logout": "ออกจากระบบ",
+  "noChatsTitle": "ยังไม่มีแชท",
+  "noChatsMessage": "เพิ่มเพื่อนเพื่อเริ่มบทสนทนาแรกของคุณ",
+  "noMessagesYet": "ยังไม่มีข้อความ",
+  "yesterday": "เมื่อวาน"
 }

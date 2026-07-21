@@ -11,5 +11,8 @@ abstract final class ApiConstants {
   static const String refreshPath = '/auth/refresh';
 
   static const Duration connectTimeout = Duration(seconds: 15);
-  static const Duration receiveTimeout = Duration(seconds: 20);
+
+  /// Generous because the backend runs on a free tier that cold-starts:
+  /// the first request after idle can take close to a minute.
+  static const Duration receiveTimeout = Duration(seconds: 60);
 }

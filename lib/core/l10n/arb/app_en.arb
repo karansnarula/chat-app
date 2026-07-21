@@ -27,5 +27,9 @@
   "dontHaveAccount": "Don't have an account?",
   "alreadyHaveAccount": "Already have an account?",
   "signUp": "Sign up",
-  "logout": "Log Out"
+  "logout": "Log Out",
+  "noChatsTitle": "No chats yet",
+  "noChatsMessage": "Add a friend to start your first conversation.",
+  "noMessagesYet": "No messages yet",
+  "yesterday": "Yesterday"
 }
