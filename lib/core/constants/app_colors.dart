@@ -12,6 +12,9 @@ abstract final class AppColors {
 
   static const Color white = Color(0xFFFFFFFF);
 
+  static const Color glassLight = Color(0xFFFFFFFF);
+  static const Color glassDark = Color(0xFF1C1C1E);
+
   static const Color shimmerBaseLight = Color(0xFFEDEDED);
   static const Color shimmerHighlightLight = Color(0xFFF7F7F7);
   static const Color shimmerBaseDark = Color(0xFF2A2A2A);

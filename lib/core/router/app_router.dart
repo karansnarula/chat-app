@@ -1,6 +1,7 @@
 import 'package:chat_app/core/l10n/generated/app_localizations.dart';
 import 'package:chat_app/core/router/app_routes.dart';
 import 'package:chat_app/core/router/router_refresh_stream.dart';
+import 'package:chat_app/core/widgets/app_shell.dart';
 import 'package:chat_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:chat_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:chat_app/features/auth/presentation/screens/register_screen.dart';
@@ -46,25 +47,39 @@ abstract final class AppRouter {
           path: AppRoutes.register,
           builder: (context, state) => const RegisterScreen(),
         ),
-        GoRoute(
-          path: AppRoutes.chats,
-          builder: (context, state) => const _PlaceholderScreen(
-            titleOf: _Title.chats,
-          ),
-          routes: [
-            GoRoute(
-              path: 'friend-requests',
-              builder: (context, state) => const _PlaceholderScreen(
-                titleOf: _Title.friendRequests,
-              ),
+        StatefulShellRoute.indexedStack(
+          builder: (context, state, navigationShell) =>
+              AppShell(navigationShell: navigationShell),
+          branches: [
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: AppRoutes.chats,
+                  builder: (context, state) => const _PlaceholderScreen(
+                    titleOf: _Title.chats,
+                  ),
+                  routes: [
+                    GoRoute(
+                      path: 'friend-requests',
+                      builder: (context, state) => const _PlaceholderScreen(
+                        titleOf: _Title.friendRequests,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            StatefulShellBranch(
+              routes: [
+                GoRoute(
+                  path: AppRoutes.settings,
+                  builder: (context, state) => const _PlaceholderScreen(
+                    titleOf: _Title.settings,
+                  ),
+                ),
+              ],
             ),
           ],
-        ),
-        GoRoute(
-          path: AppRoutes.settings,
-          builder: (context, state) => const _PlaceholderScreen(
-            titleOf: _Title.settings,
-          ),
         ),
         GoRoute(
           path: AppRoutes.conversation,

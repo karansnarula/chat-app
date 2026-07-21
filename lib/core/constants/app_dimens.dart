@@ -28,4 +28,9 @@ abstract final class AppDimens {
   static const double textFieldFocusBorderWidth = 2;
   static const double avatarRadius = 24;
   static const double stateViewIconCircle = 96;
+
+  // Glass navigation bar
+  static const double navBarHeight = 64;
+  static const double glassBlur = 20;
+  static const double glassShadowBlur = 24;
 }
