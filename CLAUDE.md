@@ -76,3 +76,9 @@ Built in reviewed phases. Each phase ends with tests passing, `flutter analyze`
 clean, and one conventional commit (`feat:`, `refactor:`, `ci:`, …). Work on
 `develop`; pushes there distribute an Android build via Firebase App
 Distribution.
+
+**Always launch the real app before calling a phase done** — `flutter run`
+through `lib/main.dart`, not a scratch entrypoint. Analyzer, tests, and a
+successful build all pass happily while dependency injection fails at runtime:
+DI graph cycles only surface when `configureDependencies()` actually runs.
+Screenshot the affected screen for anything visual.
