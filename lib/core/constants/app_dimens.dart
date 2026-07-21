@@ -29,11 +29,6 @@ abstract final class AppDimens {
   static const double avatarRadius = 24;
   static const double stateViewIconCircle = 96;
 
-  // Wave navigation bar
-  static const double navBarHeight = 64;
-  static const double waveAmplitude = 22;
-  static const double waveLength = 96;
-
-  /// Bottom padding scrollables need so content clears the floating bar.
-  static const double navBarClearance = navBarHeight + spaceXl;
+  /// Navigation destination icons, sized up from [iconM] for legibility.
+  static const double iconNav = 28;
 }

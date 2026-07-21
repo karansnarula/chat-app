@@ -9,10 +9,25 @@ abstract final class AppTheme {
   static ThemeData get dark => _build(Brightness.dark);
 
   static ThemeData _build(Brightness brightness) {
+    final isLight = brightness == Brightness.light;
+
+    // Neutral roles are overridden so surfaces stay white/grey; a seeded
+    // Material 3 scheme would tint every surface with the brand orange.
     final scheme = ColorScheme.fromSeed(
       seedColor: AppColors.primary,
       brightness: brightness,
-    ).copyWith(primary: AppColors.primary);
+    ).copyWith(
+      primary: AppColors.primary,
+      surface: isLight ? AppColors.surfaceLight : AppColors.surfaceDark,
+      surfaceContainerHighest: isLight
+          ? AppColors.surfaceContainerLight
+          : AppColors.surfaceContainerDark,
+      onSurface: isLight ? AppColors.onSurfaceLight : AppColors.onSurfaceDark,
+      onSurfaceVariant: isLight
+          ? AppColors.onSurfaceVariantLight
+          : AppColors.onSurfaceVariantDark,
+      outlineVariant: isLight ? AppColors.outlineLight : AppColors.outlineDark,
+    );
 
     final base = ThemeData(
       useMaterial3: true,
@@ -31,7 +46,7 @@ abstract final class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: scheme.surfaceContainerHighest.withValues(alpha: 0.4),
+        fillColor: scheme.surfaceContainerHighest,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppDimens.spaceM,
           vertical: AppDimens.spaceM,
@@ -79,21 +94,22 @@ abstract final class AppTheme {
               : scheme.surfaceContainerHighest,
         ),
       ),
-      // WaveBottomBar reads its colors from this theme.
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: scheme.surfaceContainerHighest,
+        backgroundColor: scheme.surface,
         selectedItemColor: scheme.primary,
         unselectedItemColor: scheme.onSurfaceVariant,
-        selectedLabelStyle: TextStyle(
-          color: scheme.primary,
-          fontSize: AppFontSizes.xs,
+        selectedIconTheme: const IconThemeData(size: AppDimens.iconNav),
+        unselectedIconTheme: const IconThemeData(size: AppDimens.iconNav),
+        selectedLabelStyle: const TextStyle(
+          fontSize: AppFontSizes.s,
           fontWeight: FontWeight.w700,
         ),
-        unselectedLabelStyle: TextStyle(
-          color: scheme.onSurfaceVariant,
-          fontSize: AppFontSizes.xs,
+        unselectedLabelStyle: const TextStyle(
+          fontSize: AppFontSizes.s,
           fontWeight: FontWeight.w500,
         ),
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,

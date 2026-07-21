@@ -1265,14 +1265,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
-  wave_bottom_bar:
-    dependency: "direct main"
-    description:
-      name: wave_bottom_bar
-      sha256: "2ab0eddc5e7235ec6cec8ba89bc36a3b7862e6f93b0ba89aaea427f681e40b3e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.7.0"
   web:
     dependency: transitive
     description:
