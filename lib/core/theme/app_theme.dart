@@ -94,22 +94,33 @@ abstract final class AppTheme {
               : scheme.surfaceContainerHighest,
         ),
       ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      navigationBarTheme: NavigationBarThemeData(
+        height: AppDimens.navBarHeight,
         backgroundColor: scheme.surface,
-        selectedItemColor: scheme.primary,
-        unselectedItemColor: scheme.onSurfaceVariant,
-        selectedIconTheme: const IconThemeData(size: AppDimens.iconNav),
-        unselectedIconTheme: const IconThemeData(size: AppDimens.iconNav),
-        selectedLabelStyle: const TextStyle(
-          fontSize: AppFontSizes.s,
-          fontWeight: FontWeight.w700,
-        ),
-        unselectedLabelStyle: const TextStyle(
-          fontSize: AppFontSizes.s,
-          fontWeight: FontWeight.w500,
-        ),
-        type: BottomNavigationBarType.fixed,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: scheme.primary.withValues(alpha: 0.16),
+        indicatorShape: const StadiumBorder(),
         elevation: 0,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        iconTheme: WidgetStateProperty.resolveWith(
+          (states) => IconThemeData(
+            size: AppDimens.iconNav,
+            color: states.contains(WidgetState.selected)
+                ? scheme.primary
+                : scheme.onSurfaceVariant,
+          ),
+        ),
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => TextStyle(
+            fontSize: AppFontSizes.s,
+            fontWeight: states.contains(WidgetState.selected)
+                ? FontWeight.w700
+                : FontWeight.w500,
+            color: states.contains(WidgetState.selected)
+                ? scheme.primary
+                : scheme.onSurfaceVariant,
+          ),
+        ),
       ),
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,

@@ -21,18 +21,18 @@ class AppShell extends StatelessWidget {
 
     return Scaffold(
       body: navigationShell,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: navigationShell.currentIndex,
-        onTap: _onDestinationSelected,
-        items: [
-          BottomNavigationBarItem(
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: navigationShell.currentIndex,
+        onDestinationSelected: _onDestinationSelected,
+        destinations: [
+          NavigationDestination(
             icon: const Icon(Icons.chat_bubble_outline_rounded),
-            activeIcon: const Icon(Icons.chat_bubble_rounded),
+            selectedIcon: const Icon(Icons.chat_bubble_rounded),
             label: l10n.chats,
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: const Icon(Icons.settings_outlined),
-            activeIcon: const Icon(Icons.settings_rounded),
+            selectedIcon: const Icon(Icons.settings_rounded),
             label: l10n.settings,
           ),
         ],

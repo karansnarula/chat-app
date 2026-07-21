@@ -31,4 +31,5 @@ abstract final class AppDimens {
 
   /// Navigation destination icons, sized up from [iconM] for legibility.
   static const double iconNav = 28;
+  static const double navBarHeight = 68;
 }
