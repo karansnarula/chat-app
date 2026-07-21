@@ -31,6 +31,9 @@ abstract final class AppDimens {
 
   // Glass navigation bar
   static const double navBarHeight = 64;
+  static const double navCircleSize = 52;
+  static const double navNotchWidth = 96;
+  static const double navNotchDepth = 28;
   static const double glassBlur = 20;
   static const double glassShadowBlur = 24;
 }

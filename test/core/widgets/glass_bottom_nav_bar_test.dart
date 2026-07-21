@@ -29,14 +29,16 @@ Widget wrap({required int currentIndex, ValueChanged<int>? onSelected}) =>
     );
 
 void main() {
-  testWidgets('shows the label only for the selected destination',
+  testWidgets('shows every label and lifts the selected icon into the circle',
       (tester) async {
     await tester.pumpWidget(wrap(currentIndex: 0));
     await tester.pumpAndSettle();
 
     expect(find.text('Chats'), findsOneWidget);
-    expect(find.text('Settings'), findsNothing);
+    expect(find.text('Settings'), findsOneWidget);
+    // Selected icon rides in the floating circle.
     expect(find.byIcon(Icons.chat_bubble_rounded), findsOneWidget);
+    // Unselected keeps its outline icon in the bar.
     expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
   });
 
