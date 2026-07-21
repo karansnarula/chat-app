@@ -31,5 +31,8 @@ abstract final class AppDimens {
 
   /// Navigation destination icons, sized up from [iconM] for legibility.
   static const double iconNav = 28;
-  static const double navBarHeight = 68;
+  static const double navBarHeight = 64;
+
+  /// Bottom padding scrollables need so content clears the floating bar.
+  static const double navBarClearance = navBarHeight + spaceXl;
 }
