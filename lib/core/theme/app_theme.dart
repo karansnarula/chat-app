@@ -29,6 +29,11 @@ abstract final class AppTheme {
       outlineVariant: isLight ? AppColors.outlineLight : AppColors.outlineDark,
     );
 
+    // Dark mode uses a deeper orange so the bar does not glare against
+    // near-black surfaces.
+    final navBarColor =
+        isLight ? AppColors.primary : AppColors.primaryDeep;
+
     final base = ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
@@ -94,11 +99,13 @@ abstract final class AppTheme {
               : scheme.surfaceContainerHighest,
         ),
       ),
+      // Inverted bar: orange surface with white destinations, and the
+      // selected one on a white pill.
       navigationBarTheme: NavigationBarThemeData(
         height: AppDimens.navBarHeight,
-        backgroundColor: scheme.surface,
+        backgroundColor: navBarColor,
         surfaceTintColor: Colors.transparent,
-        indicatorColor: scheme.primary.withValues(alpha: 0.16),
+        indicatorColor: AppColors.white,
         indicatorShape: const StadiumBorder(),
         elevation: 0,
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
@@ -106,19 +113,18 @@ abstract final class AppTheme {
           (states) => IconThemeData(
             size: AppDimens.iconNav,
             color: states.contains(WidgetState.selected)
-                ? scheme.primary
-                : scheme.onSurfaceVariant,
+                ? navBarColor
+                : AppColors.white,
           ),
         ),
+        // Labels sit on the bar itself, not on the pill, so they stay white.
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => TextStyle(
             fontSize: AppFontSizes.s,
             fontWeight: states.contains(WidgetState.selected)
                 ? FontWeight.w700
                 : FontWeight.w500,
-            color: states.contains(WidgetState.selected)
-                ? scheme.primary
-                : scheme.onSurfaceVariant,
+            color: AppColors.white,
           ),
         ),
       ),

@@ -10,6 +10,10 @@ abstract final class AppColors {
   /// the selected navigation destination, and the pending-requests dot.
   static const Color primary = Color(0xFFFF7A00);
 
+  /// Muted orange for large filled areas in dark mode, where full-strength
+  /// [primary] glares against near-black surfaces.
+  static const Color primaryDeep = Color(0xFFC85F00);
+
   static const Color white = Color(0xFFFFFFFF);
 
   // Neutral surfaces. Kept deliberately untinted: a seeded Material 3
