@@ -2,6 +2,7 @@ import 'package:chat_app/core/constants/api_constants.dart';
 import 'package:chat_app/core/network/session_manager.dart';
 import 'package:chat_app/core/storage/token_storage.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 /// Attaches the access token to outgoing requests and transparently
@@ -13,9 +14,18 @@ import 'package:injectable/injectable.dart';
 /// cleared and [SessionManager.expireSession] fires.
 @injectable
 class AuthInterceptor extends QueuedInterceptor {
-  AuthInterceptor(this._tokenStorage, this._sessionManager, {Dio? refreshDio})
-      : _refreshDio =
-            refreshDio ?? Dio(BaseOptions(baseUrl: ApiConstants.baseUrl));
+  AuthInterceptor(this._tokenStorage, this._sessionManager)
+      : _refreshDio = Dio(BaseOptions(baseUrl: ApiConstants.baseUrl));
+
+  /// Takes the refresh client explicitly. Kept out of the injectable
+  /// constructor because injecting the app's [Dio] here would make
+  /// Dio and AuthInterceptor depend on each other.
+  @visibleForTesting
+  AuthInterceptor.withRefreshClient(
+    this._tokenStorage,
+    this._sessionManager,
+    this._refreshDio,
+  );
 
   final TokenStorage _tokenStorage;
   final SessionManager _sessionManager;

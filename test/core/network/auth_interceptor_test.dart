@@ -32,7 +32,11 @@ void main() {
     dio = Dio(BaseOptions(validateStatus: (_) => true))
       ..httpClientAdapter = adapter
       ..interceptors.add(
-        AuthInterceptor(tokenStorage, sessionManager, refreshDio: refreshDio),
+        AuthInterceptor.withRefreshClient(
+          tokenStorage,
+          sessionManager,
+          refreshDio,
+        ),
       );
   });
 
