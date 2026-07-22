@@ -9,6 +9,7 @@ import 'package:chat_app/features/chats/domain/entities/conversation.dart';
 import 'package:chat_app/features/chats/presentation/bloc/chats_bloc.dart';
 import 'package:chat_app/features/chats/presentation/widgets/conversation_list_skeleton.dart';
 import 'package:chat_app/features/chats/presentation/widgets/conversation_tile.dart';
+import 'package:chat_app/features/friend_requests/presentation/bloc/friend_requests_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -25,8 +26,20 @@ class ChatsScreen extends StatelessWidget {
   }
 }
 
-class _ChatsView extends StatelessWidget {
+class _ChatsView extends StatefulWidget {
   const _ChatsView();
+
+  @override
+  State<_ChatsView> createState() => _ChatsViewState();
+}
+
+class _ChatsViewState extends State<_ChatsView> {
+  @override
+  void initState() {
+    super.initState();
+    // Drives the pending-requests dot in the app bar.
+    context.read<FriendRequestsBloc>().add(const FriendRequestsRefreshed());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +49,8 @@ class _ChatsView extends StatelessWidget {
       appBar: AppBar(
         title: Text(l10n.chats),
         actions: [
-          IconButton(
-            tooltip: l10n.friendRequests,
-            icon: const Icon(Icons.person_add_alt_1_outlined),
-            onPressed: () => context.go(AppRoutes.friendRequests),
+          _FriendRequestsAction(
+            onPressed: () => context.push(AppRoutes.friendRequests),
           ),
         ],
       ),
@@ -52,6 +63,47 @@ class _ChatsView extends StatelessWidget {
               conversations: state.conversations,
             ),
         },
+      ),
+    );
+  }
+}
+
+/// Friend-requests button with a dot shown whenever requests are pending.
+class _FriendRequestsAction extends StatelessWidget {
+  const _FriendRequestsAction({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+
+    return BlocSelector<FriendRequestsBloc, FriendRequestsState, bool>(
+      selector: (state) => state.hasPending,
+      builder: (context, hasPending) => IconButton(
+        tooltip: l10n.friendRequests,
+        onPressed: onPressed,
+        icon: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            const Icon(Icons.person_add_alt_1_outlined),
+            if (hasPending)
+              Positioned(
+                right: -AppDimens.spaceXs / 2,
+                top: -AppDimens.spaceXs / 2,
+                child: Container(
+                  width: AppDimens.pendingDotSize,
+                  height: AppDimens.pendingDotSize,
+                  decoration: BoxDecoration(
+                    color: scheme.primary,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: scheme.surface, width: 2),
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

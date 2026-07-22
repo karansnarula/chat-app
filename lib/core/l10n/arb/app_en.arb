@@ -31,5 +31,16 @@
   "noChatsTitle": "No chats yet",
   "noChatsMessage": "Add a friend to start your first conversation.",
   "noMessagesYet": "No messages yet",
-  "yesterday": "Yesterday"
+  "yesterday": "Yesterday",
+  "accept": "Accept",
+  "decline": "Decline",
+  "cancel": "Cancel",
+  "send": "Send",
+  "addFriend": "Add Friend",
+  "addFriendMessage": "Enter the email address of the person you want to add.",
+  "noRequestsTitle": "No friend requests",
+  "noRequestsMessage": "Requests from other people will appear here.",
+  "requestSent": "Friend request sent",
+  "requestAccepted": "Friend request accepted",
+  "requestDeclined": "Friend request declined"
 }

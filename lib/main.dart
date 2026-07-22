@@ -2,6 +2,7 @@ import 'package:chat_app/core/di/injection.dart';
 import 'package:chat_app/core/l10n/generated/app_localizations.dart';
 import 'package:chat_app/core/theme/app_theme.dart';
 import 'package:chat_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:chat_app/features/friend_requests/presentation/bloc/friend_requests_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -17,8 +18,11 @@ class ChatApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: getIt<AuthBloc>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: getIt<AuthBloc>()),
+        BlocProvider.value(value: getIt<FriendRequestsBloc>()),
+      ],
       child: MaterialApp.router(
         onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
         theme: AppTheme.light,

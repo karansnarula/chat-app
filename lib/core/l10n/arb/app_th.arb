@@ -31,5 +31,16 @@
   "noChatsTitle": "ยังไม่มีแชท",
   "noChatsMessage": "เพิ่มเพื่อนเพื่อเริ่มบทสนทนาแรกของคุณ",
   "noMessagesYet": "ยังไม่มีข้อความ",
-  "yesterday": "เมื่อวาน"
+  "yesterday": "เมื่อวาน",
+  "accept": "ยอมรับ",
+  "decline": "ปฏิเสธ",
+  "cancel": "ยกเลิก",
+  "send": "ส่ง",
+  "addFriend": "เพิ่มเพื่อน",
+  "addFriendMessage": "กรอกอีเมลของคนที่คุณต้องการเพิ่ม",
+  "noRequestsTitle": "ไม่มีคำขอเป็นเพื่อน",
+  "noRequestsMessage": "คำขอจากผู้อื่นจะแสดงที่นี่",
+  "requestSent": "ส่งคำขอเป็นเพื่อนแล้ว",
+  "requestAccepted": "ยอมรับคำขอเป็นเพื่อนแล้ว",
+  "requestDeclined": "ปฏิเสธคำขอเป็นเพื่อนแล้ว"
 }

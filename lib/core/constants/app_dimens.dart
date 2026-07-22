@@ -33,6 +33,7 @@ abstract final class AppDimens {
   static const double iconNav = 28;
   static const double navBarHeight = 64;
   static const double unreadBadgeSize = 22;
+  static const double pendingDotSize = 11;
 
   /// Bottom padding scrollables need so content clears the floating bar.
   static const double navBarClearance = navBarHeight + spaceXl;
