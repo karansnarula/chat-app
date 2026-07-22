@@ -3,6 +3,7 @@ import 'package:chat_app/core/di/injection.dart';
 import 'package:chat_app/core/error/app_exception.dart';
 import 'package:chat_app/core/error/app_exception_l10n.dart';
 import 'package:chat_app/core/l10n/generated/app_localizations.dart';
+import 'package:chat_app/core/notifications/active_conversation.dart';
 import 'package:chat_app/core/widgets/app_state_view.dart';
 import 'package:chat_app/core/widgets/connection_banner.dart';
 import 'package:chat_app/features/conversation/presentation/bloc/conversation_bloc.dart';
@@ -27,14 +28,18 @@ class ConversationScreen extends StatelessWidget {
     return BlocProvider(
       create: (_) => getIt<ConversationBloc>(param1: conversationId)
         ..add(const ConversationOpened()),
-      child: _ConversationView(title: title),
+      child: _ConversationView(
+        conversationId: conversationId,
+        title: title,
+      ),
     );
   }
 }
 
 class _ConversationView extends StatefulWidget {
-  const _ConversationView({required this.title});
+  const _ConversationView({required this.conversationId, required this.title});
 
+  final String conversationId;
   final String title;
 
   @override
@@ -43,6 +48,7 @@ class _ConversationView extends StatefulWidget {
 
 class _ConversationViewState extends State<_ConversationView> {
   final _scrollController = ScrollController();
+  final ActiveConversation _activeConversation = getIt<ActiveConversation>();
 
   /// Distance from the top of the reversed list at which older messages
   /// start loading.
@@ -52,10 +58,13 @@ class _ConversationViewState extends State<_ConversationView> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    // Suppresses notifications for the thread being read.
+    _activeConversation.enter(widget.conversationId);
   }
 
   @override
   void dispose() {
+    _activeConversation.leave(widget.conversationId);
     _scrollController
       ..removeListener(_onScroll)
       ..dispose();

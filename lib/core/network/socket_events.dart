@@ -13,6 +13,7 @@ class IncomingMessage {
     required this.content,
     required this.senderId,
     required this.createdAt,
+    this.senderName,
   });
 
   /// Tolerant of missing fields: a malformed payload must not crash the
@@ -29,6 +30,8 @@ class IncomingMessage {
       return null;
     }
 
+    final sender = json['sender'];
+
     return IncomingMessage(
       id: id,
       conversationId: conversationId,
@@ -37,6 +40,8 @@ class IncomingMessage {
       createdAt:
           DateTime.tryParse(json['createdAt'] as String? ?? '')?.toLocal() ??
               DateTime.now(),
+      senderName:
+          sender is Map ? sender['displayName'] as String? : null,
     );
   }
 
@@ -45,6 +50,9 @@ class IncomingMessage {
   final String content;
   final String senderId;
   final DateTime createdAt;
+
+  /// Present on socket pushes; used as the notification title.
+  final String? senderName;
 }
 
 /// Notification that the other participant read the thread.
