@@ -17,4 +17,14 @@ abstract interface class ConversationRepository {
 
   /// Id of the signed-in user, used to align and attribute messages.
   Future<String?> currentUserId();
+
+  /// Messages pushed by the server for [conversationId].
+  Stream<Message> incomingMessages(String conversationId);
+
+  /// Fires when the other participant reads [conversationId].
+  Stream<void> readReceipts(String conversationId);
+
+  /// Fires when the realtime connection is (re)established, so callers can
+  /// refetch whatever they missed while it was down.
+  Stream<void> get reconnections;
 }

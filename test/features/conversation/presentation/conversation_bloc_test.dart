@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:chat_app/core/error/app_exception.dart';
 import 'package:chat_app/core/error/result.dart';
@@ -6,6 +8,7 @@ import 'package:chat_app/features/conversation/domain/usecases/get_current_user_
 import 'package:chat_app/features/conversation/domain/usecases/get_messages_use_case.dart';
 import 'package:chat_app/features/conversation/domain/usecases/mark_as_read_use_case.dart';
 import 'package:chat_app/features/conversation/domain/usecases/send_message_use_case.dart';
+import 'package:chat_app/features/conversation/domain/usecases/watch_conversation_use_case.dart';
 import 'package:chat_app/features/conversation/presentation/bloc/conversation_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -17,6 +20,15 @@ class MockSendMessage extends Mock implements SendMessageUseCase {}
 class MockMarkAsRead extends Mock implements MarkAsReadUseCase {}
 
 class MockGetCurrentUserId extends Mock implements GetCurrentUserIdUseCase {}
+
+class MockWatchIncomingMessages extends Mock
+    implements WatchIncomingMessagesUseCase {}
+
+class MockWatchReadReceipts extends Mock
+    implements WatchReadReceiptsUseCase {}
+
+class MockWatchReconnections extends Mock
+    implements WatchReconnectionsUseCase {}
 
 void main() {
   const conversationId = 'c1';
@@ -41,15 +53,37 @@ void main() {
   late MockSendMessage sendMessage;
   late MockMarkAsRead markAsRead;
   late MockGetCurrentUserId getCurrentUserId;
+  late MockWatchIncomingMessages watchMessages;
+  late MockWatchReadReceipts watchReadReceipts;
+  late MockWatchReconnections watchReconnections;
+  late StreamController<Message> incoming;
+  late StreamController<void> reads;
+  late StreamController<void> reconnects;
 
   setUp(() {
     getMessages = MockGetMessages();
     sendMessage = MockSendMessage();
     markAsRead = MockMarkAsRead();
     getCurrentUserId = MockGetCurrentUserId();
+    watchMessages = MockWatchIncomingMessages();
+    watchReadReceipts = MockWatchReadReceipts();
+    watchReconnections = MockWatchReconnections();
+
+    incoming = StreamController<Message>.broadcast();
+    reads = StreamController<void>.broadcast();
+    reconnects = StreamController<void>.broadcast();
 
     when(getCurrentUserId.call).thenAnswer((_) async => myId);
     when(() => markAsRead(any())).thenAnswer((_) async => const Success(null));
+    when(() => watchMessages(any())).thenAnswer((_) => incoming.stream);
+    when(() => watchReadReceipts(any())).thenAnswer((_) => reads.stream);
+    when(watchReconnections.call).thenAnswer((_) => reconnects.stream);
+  });
+
+  tearDown(() async {
+    await incoming.close();
+    await reads.close();
+    await reconnects.close();
   });
 
   ConversationBloc buildBloc() => ConversationBloc(
@@ -58,6 +92,9 @@ void main() {
         sendMessage,
         markAsRead,
         getCurrentUserId,
+        watchMessages,
+        watchReadReceipts,
+        watchReconnections,
       );
 
   void stubFirstPage({String? nextCursor}) {
@@ -244,6 +281,79 @@ void main() {
         ),
       ),
       verify: (bloc) => expect(bloc.state.messages, [sent]),
+    );
+  });
+
+  group('realtime', () {
+    final pushed = Message(
+      id: 'pushed-1',
+      content: 'Live message',
+      senderId: 'u2',
+      createdAt: DateTime(2026, 7, 22, 12),
+      status: MessageStatus.sent,
+    );
+
+    blocTest<ConversationBloc, ConversationState>(
+      'prepends a pushed message and marks the thread read',
+      build: buildBloc,
+      seed: () => ConversationState(
+        status: ConversationStatus.success,
+        currentUserId: myId,
+        messages: [newer],
+      ),
+      act: (_) => incoming.add(pushed),
+      wait: const Duration(milliseconds: 50),
+      verify: (bloc) {
+        expect(bloc.state.messages, [pushed, newer]);
+        verify(() => markAsRead(conversationId)).called(1);
+      },
+    );
+
+    blocTest<ConversationBloc, ConversationState>(
+      'ignores a pushed message it already has',
+      build: buildBloc,
+      seed: () => ConversationState(
+        status: ConversationStatus.success,
+        currentUserId: myId,
+        messages: [newer],
+      ),
+      act: (_) => incoming.add(newer),
+      wait: const Duration(milliseconds: 50),
+      expect: () => <ConversationState>[],
+    );
+
+    blocTest<ConversationBloc, ConversationState>(
+      'flips my delivered messages to read when the other side reads',
+      build: buildBloc,
+      seed: () => ConversationState(
+        status: ConversationStatus.success,
+        currentUserId: myId,
+        messages: [newer, older],
+      ),
+      act: (_) => reads.add(null),
+      wait: const Duration(milliseconds: 50),
+      verify: (bloc) {
+        // Mine flips to read; theirs is untouched.
+        expect(bloc.state.messages.first.status, MessageStatus.read);
+        expect(bloc.state.messages.last, older);
+      },
+    );
+
+    blocTest<ConversationBloc, ConversationState>(
+      'pulls in messages missed while the connection was down',
+      build: buildBloc,
+      seed: () => ConversationState(
+        status: ConversationStatus.success,
+        currentUserId: myId,
+        messages: [older],
+      ),
+      setUp: () =>
+          when(() => getMessages(conversationId: conversationId)).thenAnswer(
+        (_) async => Success(MessagePage(messages: [newer, older])),
+      ),
+      act: (_) => reconnects.add(null),
+      wait: const Duration(milliseconds: 50),
+      verify: (bloc) => expect(bloc.state.messages, [newer, older]),
     );
   });
 

@@ -1,5 +1,7 @@
+import 'package:async/async.dart' show StreamGroup;
 import 'package:chat_app/core/error/api_guard.dart';
 import 'package:chat_app/core/error/result.dart';
+import 'package:chat_app/core/network/socket_service.dart';
 import 'package:chat_app/features/friend_requests/data/datasources/friends_api.dart';
 import 'package:chat_app/features/friend_requests/data/models/respond_request_dto.dart';
 import 'package:chat_app/features/friend_requests/data/models/send_request_dto.dart';
@@ -9,9 +11,10 @@ import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: FriendRequestsRepository)
 class FriendRequestsRepositoryImpl implements FriendRequestsRepository {
-  const FriendRequestsRepositoryImpl(this._api);
+  const FriendRequestsRepositoryImpl(this._api, this._socketService);
 
   final FriendsApi _api;
+  final SocketService _socketService;
 
   @override
   Future<Result<List<FriendRequest>>> getPendingRequests() async {
@@ -38,4 +41,10 @@ class FriendRequestsRepositoryImpl implements FriendRequestsRepository {
       RespondRequestDto(action: response.name),
     ),
   );
+
+  @override
+  Stream<void> get requestsInvalidated => StreamGroup.merge([
+    _socketService.friendRequests,
+    _socketService.reconnections,
+  ]);
 }

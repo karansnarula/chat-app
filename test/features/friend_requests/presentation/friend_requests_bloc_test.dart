@@ -5,6 +5,7 @@ import 'package:chat_app/features/friend_requests/domain/entities/friend_request
 import 'package:chat_app/features/friend_requests/domain/usecases/get_pending_requests_use_case.dart';
 import 'package:chat_app/features/friend_requests/domain/usecases/respond_to_request_use_case.dart';
 import 'package:chat_app/features/friend_requests/domain/usecases/send_friend_request_use_case.dart';
+import 'package:chat_app/features/friend_requests/domain/usecases/watch_friend_requests_use_case.dart';
 import 'package:chat_app/features/friend_requests/presentation/bloc/friend_requests_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -16,6 +17,9 @@ class MockRespondToRequest extends Mock implements RespondToRequestUseCase {}
 
 class MockSendFriendRequest extends Mock
     implements SendFriendRequestUseCase {}
+
+class MockWatchFriendRequests extends Mock
+    implements WatchFriendRequestsUseCase {}
 
 void main() {
   final requests = [
@@ -42,15 +46,18 @@ void main() {
   late MockGetPendingRequests getPending;
   late MockRespondToRequest respond;
   late MockSendFriendRequest send;
+  late MockWatchFriendRequests watchRequests;
 
   setUp(() {
     getPending = MockGetPendingRequests();
     respond = MockRespondToRequest();
     send = MockSendFriendRequest();
+    watchRequests = MockWatchFriendRequests();
+    when(watchRequests.call).thenAnswer((_) => const Stream.empty());
   });
 
   FriendRequestsBloc buildBloc() =>
-      FriendRequestsBloc(getPending, respond, send);
+      FriendRequestsBloc(getPending, respond, send, watchRequests);
 
   group('loading', () {
     blocTest<FriendRequestsBloc, FriendRequestsState>(

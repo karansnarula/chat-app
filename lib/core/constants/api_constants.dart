@@ -10,6 +10,10 @@ abstract final class ApiConstants {
 
   static const String refreshPath = '/auth/refresh';
 
+  /// Cheap authenticated endpoint, used to force a token refresh before
+  /// opening the socket.
+  static const String mePath = '/auth/me';
+
   /// Backend caps this at 50.
   static const int messagePageSize = 30;
 

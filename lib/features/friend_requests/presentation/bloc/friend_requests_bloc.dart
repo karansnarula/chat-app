@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:chat_app/core/error/app_exception.dart';
 import 'package:chat_app/core/error/result.dart';
 import 'package:chat_app/features/friend_requests/domain/entities/friend_request.dart';
 import 'package:chat_app/features/friend_requests/domain/usecases/get_pending_requests_use_case.dart';
 import 'package:chat_app/features/friend_requests/domain/usecases/respond_to_request_use_case.dart';
 import 'package:chat_app/features/friend_requests/domain/usecases/send_friend_request_use_case.dart';
+import 'package:chat_app/features/friend_requests/domain/usecases/watch_friend_requests_use_case.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -20,17 +23,22 @@ class FriendRequestsBloc
     this._getPendingRequests,
     this._respondToRequest,
     this._sendFriendRequest,
+    WatchFriendRequestsUseCase watchFriendRequests,
   ) : super(const FriendRequestsState()) {
     on<FriendRequestsRequested>(_onRequested);
     on<FriendRequestsRefreshed>(_onRefreshed);
     on<FriendRequestResponded>(_onResponded);
     on<FriendRequestSent>(_onSent);
     on<FriendRequestsOutcomeCleared>(_onOutcomeCleared);
+
+    _invalidationSubscription = watchFriendRequests()
+        .listen((_) => add(const FriendRequestsRefreshed()));
   }
 
   final GetPendingRequestsUseCase _getPendingRequests;
   final RespondToRequestUseCase _respondToRequest;
   final SendFriendRequestUseCase _sendFriendRequest;
+  late final StreamSubscription<void> _invalidationSubscription;
 
   Future<void> _onRequested(
     FriendRequestsRequested event,
@@ -138,5 +146,11 @@ class FriendRequestsBloc
     Emitter<FriendRequestsState> emit,
   ) {
     emit(state.copyWith(clearOutcome: true));
+  }
+
+  @override
+  Future<void> close() async {
+    await _invalidationSubscription.cancel();
+    return super.close();
   }
 }

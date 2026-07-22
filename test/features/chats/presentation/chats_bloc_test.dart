@@ -3,12 +3,16 @@ import 'package:chat_app/core/error/app_exception.dart';
 import 'package:chat_app/core/error/result.dart';
 import 'package:chat_app/features/chats/domain/entities/conversation.dart';
 import 'package:chat_app/features/chats/domain/usecases/get_conversations_use_case.dart';
+import 'package:chat_app/features/chats/domain/usecases/watch_conversations_use_case.dart';
 import 'package:chat_app/features/chats/presentation/bloc/chats_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockGetConversationsUseCase extends Mock
     implements GetConversationsUseCase {}
+
+class MockWatchConversationsUseCase extends Mock
+    implements WatchConversationsUseCase {}
 
 void main() {
   final conversations = [
@@ -30,10 +34,15 @@ void main() {
   ];
 
   late MockGetConversationsUseCase getConversations;
+  late MockWatchConversationsUseCase watchConversations;
 
-  setUp(() => getConversations = MockGetConversationsUseCase());
+  setUp(() {
+    getConversations = MockGetConversationsUseCase();
+    watchConversations = MockWatchConversationsUseCase();
+    when(watchConversations.call).thenAnswer((_) => const Stream.empty());
+  });
 
-  ChatsBloc buildBloc() => ChatsBloc(getConversations);
+  ChatsBloc buildBloc() => ChatsBloc(getConversations, watchConversations);
 
   blocTest<ChatsBloc, ChatsState>(
     'emits loading then success with conversations',
@@ -66,7 +75,23 @@ void main() {
     setUp: () => when(getConversations.call)
         .thenAnswer((_) async => Success(conversations)),
     act: (bloc) => bloc.add(const ChatsRefreshed()),
+    // Refreshes are debounced so socket bursts collapse into one fetch.
+    wait: const Duration(milliseconds: 250),
     expect: () => [ChatsState.success(conversations)],
+  );
+
+  blocTest<ChatsBloc, ChatsState>(
+    'collapses a burst of socket-driven refreshes into one fetch',
+    build: buildBloc,
+    seed: () => const ChatsState.success([]),
+    setUp: () => when(getConversations.call)
+        .thenAnswer((_) async => Success(conversations)),
+    act: (bloc) => bloc
+      ..add(const ChatsRefreshed())
+      ..add(const ChatsRefreshed())
+      ..add(const ChatsRefreshed()),
+    wait: const Duration(milliseconds: 250),
+    verify: (_) => verify(getConversations.call).called(1),
   );
 
   test('isEmpty is only true for a successful empty result', () {

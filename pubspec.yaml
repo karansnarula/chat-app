@@ -41,12 +41,16 @@ dependencies:
   firebase_messaging: ^16.4.3
   flutter_local_notifications: ^22.1.0
 
-  # UI
+  # Streams
+  async: ^2.13.1
+  stream_transform: ^2.1.1
+
   # Misc
   connectivity_plus: ^7.3.0
   emoji_picker_flutter: ^4.4.0
   intl: ^0.20.2
   cupertino_icons: ^1.0.8
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

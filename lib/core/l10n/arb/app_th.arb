@@ -47,5 +47,7 @@
   "emoji": "อีโมจิ",
   "messageHint": "ข้อความ",
   "noMessagesTitle": "ทักทายกันหน่อย",
-  "noMessagesMessage": "ส่งข้อความแรกเพื่อเริ่มบทสนทนานี้"
+  "noMessagesMessage": "ส่งข้อความแรกเพื่อเริ่มบทสนทนานี้",
+  "connecting": "กำลังเชื่อมต่อ…",
+  "notConnected": "ไม่ได้เชื่อมต่อ — ข้อความอาจล่าช้า"
 }

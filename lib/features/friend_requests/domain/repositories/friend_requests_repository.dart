@@ -10,4 +10,8 @@ abstract interface class FriendRequestsRepository {
     required String requestId,
     required RequestResponse response,
   });
+
+  /// Fires when someone sends a request, or the realtime connection comes
+  /// back after a gap.
+  Stream<void> get requestsInvalidated;
 }

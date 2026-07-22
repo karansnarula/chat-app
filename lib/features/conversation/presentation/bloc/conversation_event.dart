@@ -35,3 +35,24 @@ final class ConversationMessageRetried extends ConversationEvent {
   @override
   List<Object?> get props => [localId];
 }
+
+/// A message pushed by the server for this conversation.
+final class ConversationMessageReceived extends ConversationEvent {
+  const ConversationMessageReceived(this.message);
+
+  final Message message;
+
+  @override
+  List<Object?> get props => [message];
+}
+
+/// The other participant read the thread.
+final class ConversationReadByOther extends ConversationEvent {
+  const ConversationReadByOther();
+}
+
+/// The realtime connection came back; reload to catch up on anything
+/// missed while it was down.
+final class ConversationReconnected extends ConversationEvent {
+  const ConversationReconnected();
+}

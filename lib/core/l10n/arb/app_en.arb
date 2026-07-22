@@ -47,5 +47,7 @@
   "emoji": "Emoji",
   "messageHint": "Message",
   "noMessagesTitle": "Say hello",
-  "noMessagesMessage": "Send the first message to start this conversation."
+  "noMessagesMessage": "Send the first message to start this conversation.",
+  "connecting": "Connecting…",
+  "notConnected": "Not connected — messages may be delayed"
 }

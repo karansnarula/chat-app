@@ -1,6 +1,7 @@
 import 'package:chat_app/core/constants/api_constants.dart';
 import 'package:chat_app/core/error/api_guard.dart';
 import 'package:chat_app/core/error/result.dart';
+import 'package:chat_app/core/network/socket_service.dart';
 import 'package:chat_app/core/storage/token_storage.dart';
 import 'package:chat_app/features/conversation/data/datasources/messages_api.dart';
 import 'package:chat_app/features/conversation/data/models/message_dto.dart';
@@ -10,10 +11,15 @@ import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: ConversationRepository)
 class ConversationRepositoryImpl implements ConversationRepository {
-  const ConversationRepositoryImpl(this._api, this._tokenStorage);
+  const ConversationRepositoryImpl(
+    this._api,
+    this._tokenStorage,
+    this._socketService,
+  );
 
   final MessagesApi _api;
   final TokenStorage _tokenStorage;
+  final SocketService _socketService;
 
   @override
   Future<Result<MessagePage>> getMessages({
@@ -56,4 +62,26 @@ class ConversationRepositoryImpl implements ConversationRepository {
 
   @override
   Future<String?> currentUserId() => _tokenStorage.readUserId();
+
+  @override
+  Stream<Message> incomingMessages(String conversationId) => _socketService
+      .messages
+      .where((message) => message.conversationId == conversationId)
+      .map(
+        (message) => Message(
+          id: message.id,
+          content: message.content,
+          senderId: message.senderId,
+          createdAt: message.createdAt,
+          status: MessageStatus.sent,
+        ),
+      );
+
+  @override
+  Stream<void> readReceipts(String conversationId) => _socketService
+      .readReceipts
+      .where((receipt) => receipt.conversationId == conversationId);
+
+  @override
+  Stream<void> get reconnections => _socketService.reconnections;
 }

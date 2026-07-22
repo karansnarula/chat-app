@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:chat_app/core/error/app_exception.dart';
 import 'package:chat_app/core/error/result.dart';
 import 'package:chat_app/features/conversation/domain/entities/message.dart';
@@ -5,6 +7,7 @@ import 'package:chat_app/features/conversation/domain/usecases/get_current_user_
 import 'package:chat_app/features/conversation/domain/usecases/get_messages_use_case.dart';
 import 'package:chat_app/features/conversation/domain/usecases/mark_as_read_use_case.dart';
 import 'package:chat_app/features/conversation/domain/usecases/send_message_use_case.dart';
+import 'package:chat_app/features/conversation/domain/usecases/watch_conversation_use_case.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -20,11 +23,24 @@ class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
     this._sendMessage,
     this._markAsRead,
     this._getCurrentUserId,
+    WatchIncomingMessagesUseCase watchIncomingMessages,
+    WatchReadReceiptsUseCase watchReadReceipts,
+    WatchReconnectionsUseCase watchReconnections,
   ) : super(const ConversationState()) {
     on<ConversationOpened>(_onOpened);
     on<ConversationOlderPageRequested>(_onOlderPageRequested);
     on<ConversationMessageSent>(_onMessageSent);
     on<ConversationMessageRetried>(_onMessageRetried);
+    on<ConversationMessageReceived>(_onMessageReceived);
+    on<ConversationReadByOther>(_onReadByOther);
+    on<ConversationReconnected>(_onReconnected);
+
+    _messageSubscription = watchIncomingMessages(conversationId)
+        .listen((message) => add(ConversationMessageReceived(message)));
+    _readSubscription = watchReadReceipts(conversationId)
+        .listen((_) => add(const ConversationReadByOther()));
+    _reconnectSubscription = watchReconnections()
+        .listen((_) => add(const ConversationReconnected()));
   }
 
   final String conversationId;
@@ -32,6 +48,10 @@ class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
   final SendMessageUseCase _sendMessage;
   final MarkAsReadUseCase _markAsRead;
   final GetCurrentUserIdUseCase _getCurrentUserId;
+
+  late final StreamSubscription<Message> _messageSubscription;
+  late final StreamSubscription<void> _readSubscription;
+  late final StreamSubscription<void> _reconnectSubscription;
 
   /// Distinguishes an optimistic message from a server-assigned id.
   static const localIdPrefix = 'local-';
@@ -166,8 +186,67 @@ class ConversationBloc extends Bloc<ConversationEvent, ConversationState> {
     }
   }
 
+  /// Ignores messages already present: the sender sees its own message
+  /// through the REST response, and a reconnect can replay one.
+  Future<void> _onMessageReceived(
+    ConversationMessageReceived event,
+    Emitter<ConversationState> emit,
+  ) async {
+    final alreadyKnown =
+        state.messages.any((message) => message.id == event.message.id);
+    if (alreadyKnown) return;
+
+    emit(state.copyWith(messages: [event.message, ...state.messages]));
+
+    // The thread is on screen, so the message is read as it arrives.
+    await _markAsRead(conversationId);
+  }
+
+  void _onReadByOther(
+    ConversationReadByOther event,
+    Emitter<ConversationState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        messages: [
+          for (final message in state.messages)
+            if (state.isMine(message) && message.status == MessageStatus.sent)
+              message.copyWith(status: MessageStatus.read)
+            else
+              message,
+        ],
+      ),
+    );
+  }
+
+  Future<void> _onReconnected(
+    ConversationReconnected event,
+    Emitter<ConversationState> emit,
+  ) async {
+    // Only the newest page is refetched; older history cannot have changed.
+    final result = await _getMessages(conversationId: conversationId);
+    if (result case Success(:final value)) {
+      final known = state.messages.map((message) => message.id).toSet();
+      final missed = value.messages
+          .where((message) => !known.contains(message.id))
+          .toList();
+      if (missed.isEmpty) return;
+
+      emit(state.copyWith(messages: [...missed, ...state.messages]));
+      await _markAsRead(conversationId);
+    }
+  }
+
   List<Message> _replace(String id, Message replacement) => [
         for (final message in state.messages)
           if (message.id == id) replacement else message,
       ];
+
+  @override
+  Future<void> close() async {
+    await _messageSubscription.cancel();
+    await _readSubscription.cancel();
+    await _reconnectSubscription.cancel();
+    return super.close();
+  }
 }
