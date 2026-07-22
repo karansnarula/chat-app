@@ -8,4 +8,8 @@ abstract final class AppRoutes {
   static const String conversation = '/conversation/:id';
 
   static String conversationWithId(String id) => '/conversation/$id';
+
+  /// Contact name, passed so the app bar has a title before the thread
+  /// loads.
+  static const String conversationTitleParam = 'title';
 }

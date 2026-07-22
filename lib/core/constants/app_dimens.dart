@@ -10,6 +10,7 @@ abstract final class AppDimens {
   static const double spaceXxl = 48;
 
   // Corner radii
+  static const double radiusXs = 4;
   static const double radiusS = 8;
   static const double radiusM = 12;
   static const double radiusL = 16;
@@ -34,6 +35,9 @@ abstract final class AppDimens {
   static const double navBarHeight = 64;
   static const double unreadBadgeSize = 22;
   static const double pendingDotSize = 11;
+  static const double bubbleMaxWidthFactor = 0.75;
+  static const double composerMaxHeight = 120;
+  static const double emojiPickerHeight = 260;
 
   /// Bottom padding scrollables need so content clears the floating bar.
   static const double navBarClearance = navBarHeight + spaceXl;

@@ -133,8 +133,15 @@ class _ConversationList extends StatelessWidget {
           final conversation = conversations[index];
           return ConversationTile(
             conversation: conversation,
-            onTap: () =>
-                context.push(AppRoutes.conversationWithId(conversation.id)),
+            onTap: () => context.push(
+              Uri(
+                path: AppRoutes.conversationWithId(conversation.id),
+                queryParameters: {
+                  AppRoutes.conversationTitleParam:
+                      conversation.otherUser.displayName,
+                },
+              ).toString(),
+            ),
           );
         },
       ),

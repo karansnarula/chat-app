@@ -16,6 +16,9 @@ abstract final class AppColors {
 
   static const Color white = Color(0xFFFFFFFF);
 
+  /// Read ticks, kept blue so they stay legible on the orange bubble.
+  static const Color readReceipt = Color(0xFF4FC3F7);
+
   // Neutral surfaces. Kept deliberately untinted: a seeded Material 3
   // scheme would wash every surface with orange.
   static const Color surfaceLight = Color(0xFFFFFFFF);

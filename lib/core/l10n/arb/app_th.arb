@@ -42,5 +42,10 @@
   "noRequestsMessage": "คำขอจากผู้อื่นจะแสดงที่นี่",
   "requestSent": "ส่งคำขอเป็นเพื่อนแล้ว",
   "requestAccepted": "ยอมรับคำขอเป็นเพื่อนแล้ว",
-  "requestDeclined": "ปฏิเสธคำขอเป็นเพื่อนแล้ว"
+  "requestDeclined": "ปฏิเสธคำขอเป็นเพื่อนแล้ว",
+  "today": "วันนี้",
+  "emoji": "อีโมจิ",
+  "messageHint": "ข้อความ",
+  "noMessagesTitle": "ทักทายกันหน่อย",
+  "noMessagesMessage": "ส่งข้อความแรกเพื่อเริ่มบทสนทนานี้"
 }

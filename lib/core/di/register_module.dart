@@ -4,6 +4,7 @@ import 'package:chat_app/core/router/app_router.dart';
 import 'package:chat_app/features/auth/data/datasources/auth_api.dart';
 import 'package:chat_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:chat_app/features/chats/data/datasources/chats_api.dart';
+import 'package:chat_app/features/conversation/data/datasources/messages_api.dart';
 import 'package:chat_app/features/friend_requests/data/datasources/friends_api.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -27,6 +28,9 @@ abstract class RegisterModule {
 
   @lazySingleton
   FriendsApi friendsApi(Dio dio) => FriendsApi(dio);
+
+  @lazySingleton
+  MessagesApi messagesApi(Dio dio) => MessagesApi(dio);
 
   @lazySingleton
   GoRouter router(AuthBloc authBloc) => AppRouter.create(authBloc);

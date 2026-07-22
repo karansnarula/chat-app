@@ -52,6 +52,7 @@ class AuthRepositoryImpl implements AuthRepository {
           accessToken: value.accessToken,
           refreshToken: value.refreshToken,
         );
+        await _tokenStorage.saveUserId(value.user.id);
         return Success(value.user.toEntity());
       case Failure(:final exception):
         return Failure(exception);

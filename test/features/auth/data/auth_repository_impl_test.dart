@@ -52,6 +52,7 @@ void main() {
         refreshToken: any(named: 'refreshToken'),
       ),
     ).thenAnswer((_) async {});
+    when(() => tokenStorage.saveUserId(any())).thenAnswer((_) async {});
 
     final result = await repository.login(
       email: 'k@n.com',
@@ -67,6 +68,7 @@ void main() {
         refreshToken: 'refresh',
       ),
     ).called(1);
+    verify(() => tokenStorage.saveUserId('u1')).called(1);
   });
 
   test('login returns Failure with the mapped AppException', () async {

@@ -42,5 +42,10 @@
   "noRequestsMessage": "Requests from other people will appear here.",
   "requestSent": "Friend request sent",
   "requestAccepted": "Friend request accepted",
-  "requestDeclined": "Friend request declined"
+  "requestDeclined": "Friend request declined",
+  "today": "Today",
+  "emoji": "Emoji",
+  "messageHint": "Message",
+  "noMessagesTitle": "Say hello",
+  "noMessagesMessage": "Send the first message to start this conversation."
 }

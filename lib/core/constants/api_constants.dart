@@ -10,6 +10,9 @@ abstract final class ApiConstants {
 
   static const String refreshPath = '/auth/refresh';
 
+  /// Backend caps this at 50.
+  static const int messagePageSize = 30;
+
   static const Duration connectTimeout = Duration(seconds: 15);
 
   /// Generous because the backend runs on a free tier that cold-starts:

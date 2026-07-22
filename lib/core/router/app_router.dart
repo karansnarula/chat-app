@@ -7,6 +7,7 @@ import 'package:chat_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:chat_app/features/auth/presentation/screens/register_screen.dart';
 import 'package:chat_app/features/auth/presentation/screens/splash_screen.dart';
 import 'package:chat_app/features/chats/presentation/screens/chats_screen.dart';
+import 'package:chat_app/features/conversation/presentation/screens/conversation_screen.dart';
 import 'package:chat_app/features/friend_requests/presentation/screens/friend_requests_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -82,8 +83,11 @@ abstract final class AppRouter {
         ),
         GoRoute(
           path: AppRoutes.conversation,
-          builder: (context, state) => const _PlaceholderScreen(
-            titleOf: _Title.conversation,
+          builder: (context, state) => ConversationScreen(
+            conversationId: state.pathParameters['id']!,
+            title: state.uri
+                    .queryParameters[AppRoutes.conversationTitleParam] ??
+                AppLocalizations.of(context).conversation,
           ),
         ),
       ],
