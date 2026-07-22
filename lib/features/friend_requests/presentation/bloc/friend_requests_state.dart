@@ -35,7 +35,7 @@ class FriendRequestsState extends Equatable {
   const FriendRequestsState({
     this.status = FriendRequestsStatus.loading,
     this.requests = const [],
-    this.pendingIds = const {},
+    this.awaitingResponseIds = const {},
     this.failure,
     this.outcome,
     this.isSending = false,
@@ -45,7 +45,7 @@ class FriendRequestsState extends Equatable {
   final List<FriendRequest> requests;
 
   /// Requests with an accept/decline call in flight.
-  final Set<String> pendingIds;
+  final Set<String> awaitingResponseIds;
   final AppException? failure;
   final RequestOutcome? outcome;
   final bool isSending;
@@ -60,7 +60,7 @@ class FriendRequestsState extends Equatable {
   FriendRequestsState copyWith({
     FriendRequestsStatus? status,
     List<FriendRequest>? requests,
-    Set<String>? pendingIds,
+    Set<String>? awaitingResponseIds,
     AppException? failure,
     RequestOutcome? outcome,
     bool? isSending,
@@ -70,7 +70,7 @@ class FriendRequestsState extends Equatable {
     return FriendRequestsState(
       status: status ?? this.status,
       requests: requests ?? this.requests,
-      pendingIds: pendingIds ?? this.pendingIds,
+      awaitingResponseIds: awaitingResponseIds ?? this.awaitingResponseIds,
       failure: clearFailure ? null : failure ?? this.failure,
       outcome: clearOutcome ? null : outcome ?? this.outcome,
       isSending: isSending ?? this.isSending,
@@ -81,7 +81,7 @@ class FriendRequestsState extends Equatable {
   List<Object?> get props => [
         status,
         requests,
-        pendingIds,
+        awaitingResponseIds,
         failure,
         outcome,
         isSending,

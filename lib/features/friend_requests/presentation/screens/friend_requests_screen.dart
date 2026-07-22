@@ -115,7 +115,7 @@ class _RequestList extends StatelessWidget {
             duration: AppDurations.fast,
             child: FriendRequestTile(
               request: request,
-              isProcessing: state.pendingIds.contains(request.id),
+              isProcessing: state.awaitingResponseIds.contains(request.id),
               onRespond: (response) =>
                   context.read<FriendRequestsBloc>().add(
                         FriendRequestResponded(

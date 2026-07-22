@@ -17,8 +17,9 @@ class FriendRequestsRepositoryImpl implements FriendRequestsRepository {
   Future<Result<List<FriendRequest>>> getPendingRequests() async {
     final result = await guard(_api.getPendingRequests);
     return switch (result) {
-      Success(:final value) =>
-        Success(value.map((dto) => dto.toEntity()).toList()),
+      Success(:final value) => Success(
+        value.map((dto) => dto.toEntity()).toList(),
+      ),
       Failure(:final exception) => Failure(exception),
     };
   }
@@ -31,11 +32,10 @@ class FriendRequestsRepositoryImpl implements FriendRequestsRepository {
   Future<Result<void>> respondToRequest({
     required String requestId,
     required RequestResponse response,
-  }) =>
-      guard(
-        () => _api.respondToRequest(
-          requestId,
-          RespondRequestDto(action: response.name),
-        ),
-      );
+  }) => guard(
+    () => _api.respondToRequest(
+      requestId,
+      RespondRequestDto(action: response.name),
+    ),
+  );
 }

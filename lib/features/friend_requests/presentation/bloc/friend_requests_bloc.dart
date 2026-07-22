@@ -73,14 +73,19 @@ class FriendRequestsBloc
     FriendRequestResponded event,
     Emitter<FriendRequestsState> emit,
   ) async {
-    emit(state.copyWith(pendingIds: {...state.pendingIds, event.requestId}));
+    emit(
+      state.copyWith(
+        awaitingResponseIds: {...state.awaitingResponseIds, event.requestId},
+      ),
+    );
 
     final result = await _respondToRequest(
       requestId: event.requestId,
       response: event.response,
     );
 
-    final remainingPending = {...state.pendingIds}..remove(event.requestId);
+    final stillAwaiting = {...state.awaitingResponseIds}
+      ..remove(event.requestId);
 
     switch (result) {
       case Success():
@@ -89,7 +94,7 @@ class FriendRequestsBloc
             requests: state.requests
                 .where((request) => request.id != event.requestId)
                 .toList(),
-            pendingIds: remainingPending,
+            awaitingResponseIds: stillAwaiting,
             outcome: event.response == RequestResponse.accept
                 ? const RequestAcceptedOutcome()
                 : const RequestDeclinedOutcome(),
@@ -98,7 +103,7 @@ class FriendRequestsBloc
       case Failure(:final exception):
         emit(
           state.copyWith(
-            pendingIds: remainingPending,
+            awaitingResponseIds: stillAwaiting,
             outcome: RequestFailedOutcome(exception),
           ),
         );

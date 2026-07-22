@@ -108,7 +108,7 @@ void main() {
         FriendRequestsState(
           status: FriendRequestsStatus.success,
           requests: requests,
-          pendingIds: const {'r1'},
+          awaitingResponseIds: const {'r1'},
         ),
         FriendRequestsState(
           status: FriendRequestsStatus.success,
@@ -141,7 +141,7 @@ void main() {
       ),
       verify: (bloc) {
         expect(bloc.state.requests, requests);
-        expect(bloc.state.pendingIds, isEmpty);
+        expect(bloc.state.awaitingResponseIds, isEmpty);
         expect(bloc.state.outcome, isA<RequestFailedOutcome>());
       },
     );
