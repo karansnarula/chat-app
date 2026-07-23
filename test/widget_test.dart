@@ -4,6 +4,8 @@ import 'package:chat_app/core/notifications/notification_service.dart';
 import 'package:chat_app/core/storage/token_storage.dart';
 import 'package:chat_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:chat_app/features/friend_requests/presentation/bloc/friend_requests_bloc.dart';
+import 'package:chat_app/features/settings/domain/entities/app_settings.dart';
+import 'package:chat_app/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:chat_app/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,6 +20,9 @@ class MockFriendRequestsBloc
     implements FriendRequestsBloc {}
 
 class MockNotificationService extends Mock implements NotificationService {}
+
+class MockSettingsBloc extends MockBloc<SettingsEvent, SettingsState>
+    implements SettingsBloc {}
 
 class MockTokenStorage extends Mock implements TokenStorage {}
 
@@ -45,9 +50,17 @@ void main() {
     final tokenStorage = MockTokenStorage();
     when(() => tokenStorage.hasTokens).thenAnswer((_) async => false);
 
+    final settingsBloc = MockSettingsBloc();
+    whenListen(
+      settingsBloc,
+      const Stream<SettingsState>.empty(),
+      initialState: const SettingsState(settings: AppSettings()),
+    );
+
     getIt
       ..registerSingleton<AuthBloc>(authBloc)
       ..registerSingleton<FriendRequestsBloc>(friendRequestsBloc)
+      ..registerSingleton<SettingsBloc>(settingsBloc)
       ..registerSingleton<NotificationService>(notificationService)
       ..registerSingleton<TokenStorage>(tokenStorage)
       ..registerSingleton<GoRouter>(

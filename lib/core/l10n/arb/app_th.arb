@@ -49,5 +49,18 @@
   "noMessagesTitle": "ทักทายกันหน่อย",
   "noMessagesMessage": "ส่งข้อความแรกเพื่อเริ่มบทสนทนานี้",
   "connecting": "กำลังเชื่อมต่อ…",
-  "notConnected": "ไม่ได้เชื่อมต่อ — ข้อความอาจล่าช้า"
+  "notConnected": "ไม่ได้เชื่อมต่อ — ข้อความอาจล่าช้า",
+  "profile": "โปรไฟล์",
+  "appearance": "ลักษณะที่ปรากฏ",
+  "theme": "ธีม",
+  "themeSystem": "ตามระบบ",
+  "themeLight": "สว่าง",
+  "themeDark": "มืด",
+  "language": "ภาษา",
+  "languageSystem": "ตามระบบ",
+  "languageEnglish": "English",
+  "languageThai": "ไทย",
+  "save": "บันทึก",
+  "displayNameSaved": "อัปเดตชื่อที่แสดงแล้ว",
+  "logoutConfirm": "คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?"
 }

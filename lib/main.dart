@@ -9,6 +9,7 @@ import 'package:chat_app/core/storage/token_storage.dart';
 import 'package:chat_app/core/theme/app_theme.dart';
 import 'package:chat_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:chat_app/features/friend_requests/presentation/bloc/friend_requests_bloc.dart';
+import 'package:chat_app/features/settings/presentation/bloc/settings_bloc.dart';
 import 'package:chat_app/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -46,18 +47,26 @@ class ChatApp extends StatelessWidget {
       providers: [
         BlocProvider.value(value: getIt<AuthBloc>()),
         BlocProvider.value(value: getIt<FriendRequestsBloc>()),
+        BlocProvider.value(value: getIt<SettingsBloc>()),
       ],
       child: NotificationNavigator(
         notificationService: getIt<NotificationService>(),
         router: router,
         authBloc: getIt<AuthBloc>(),
-        child: MaterialApp.router(
-          onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: router,
+        child: BlocBuilder<SettingsBloc, SettingsState>(
+          buildWhen: (previous, current) =>
+              previous.settings != current.settings,
+          builder: (context, state) => MaterialApp.router(
+            onGenerateTitle: (context) =>
+                AppLocalizations.of(context).appTitle,
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            themeMode: state.settings.themeMode,
+            locale: state.settings.locale,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: router,
+          ),
         ),
       ),
     );
