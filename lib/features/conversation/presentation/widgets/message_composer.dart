@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:chat_app/core/constants/app_dimens.dart';
 import 'package:chat_app/core/constants/app_durations.dart';
 import 'package:chat_app/core/l10n/generated/app_localizations.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Text field with an emoji panel that replaces the keyboard rather than
 /// stacking with it.
@@ -62,6 +65,7 @@ class _MessageComposerState extends State<MessageComposer> {
 
   void _send() {
     if (!_canSend) return;
+    unawaited(HapticFeedback.lightImpact());
     widget.onSend(_controller.text);
     _controller.clear();
   }

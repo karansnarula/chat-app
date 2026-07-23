@@ -8,6 +8,7 @@ import 'package:chat_app/features/conversation/data/datasources/messages_api.dar
 import 'package:chat_app/features/friend_requests/data/datasources/friends_api.dart';
 import 'package:chat_app/features/notifications/data/datasources/notifications_api.dart';
 import 'package:chat_app/features/settings/data/datasources/settings_api.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +19,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class RegisterModule {
   @lazySingleton
   FlutterSecureStorage get secureStorage => const FlutterSecureStorage();
+
+  @lazySingleton
+  Connectivity get connectivity => Connectivity();
 
   @preResolve
   @lazySingleton

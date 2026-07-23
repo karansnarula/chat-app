@@ -6,6 +6,7 @@ import 'package:chat_app/core/l10n/generated/app_localizations.dart';
 import 'package:chat_app/core/notifications/active_conversation.dart';
 import 'package:chat_app/core/widgets/app_state_view.dart';
 import 'package:chat_app/core/widgets/connection_banner.dart';
+import 'package:chat_app/core/widgets/offline_banner.dart';
 import 'package:chat_app/features/conversation/presentation/bloc/conversation_bloc.dart';
 import 'package:chat_app/features/conversation/presentation/widgets/date_separator.dart';
 import 'package:chat_app/features/conversation/presentation/widgets/message_bubble.dart';
@@ -86,6 +87,7 @@ class _ConversationViewState extends State<_ConversationView> {
       appBar: AppBar(title: Text(widget.title)),
       body: Column(
         children: [
+          const OfflineBanner(),
           const ConnectionBanner(),
           Expanded(
             child: BlocBuilder<ConversationBloc, ConversationState>(

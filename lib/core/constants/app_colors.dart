@@ -8,11 +8,14 @@ import 'package:flutter/material.dart';
 abstract final class AppColors {
   /// Brand orange — buttons, focus borders, toggles, the send button,
   /// the selected navigation destination, and the pending-requests dot.
-  static const Color primary = Color(0xFFFF7A00);
+  ///
+  /// Slightly softened from a pure `FF7A00`, which read as harsh across
+  /// the large filled areas this app uses it for.
+  static const Color primary = Color(0xFFF2760C);
 
   /// Muted orange for large filled areas in dark mode, where full-strength
   /// [primary] glares against near-black surfaces.
-  static const Color primaryDeep = Color(0xFFC85F00);
+  static const Color primaryDeep = Color(0xFFB8560A);
 
   static const Color white = Color(0xFFFFFFFF);
 

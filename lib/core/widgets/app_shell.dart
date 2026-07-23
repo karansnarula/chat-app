@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:chat_app/core/constants/app_dimens.dart';
 import 'package:chat_app/core/l10n/generated/app_localizations.dart';
+import 'package:chat_app/core/widgets/offline_banner.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 /// Hosts the bottom-nav destinations.
@@ -14,6 +18,7 @@ class AppShell extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
   void _onDestinationSelected(int index) {
+    unawaited(HapticFeedback.selectionClick());
     navigationShell.goBranch(
       index,
       initialLocation: index == navigationShell.currentIndex,
@@ -26,7 +31,12 @@ class AppShell extends StatelessWidget {
 
     return Scaffold(
       extendBody: true,
-      body: navigationShell,
+      body: Column(
+        children: [
+          const OfflineBanner(),
+          Expanded(child: navigationShell),
+        ],
+      ),
       bottomNavigationBar: SafeArea(
         minimum: const EdgeInsets.only(bottom: AppDimens.spaceS),
         child: Padding(
