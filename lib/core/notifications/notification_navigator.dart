@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:chat_app/core/notifications/notification_service.dart';
 import 'package:chat_app/core/router/app_routes.dart';
-import 'package:chat_app/core/storage/token_storage.dart';
+import 'package:chat_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
@@ -10,20 +10,20 @@ import 'package:go_router/go_router.dart';
 ///
 /// Kept out of [NotificationService] so that service stays free of routing;
 /// this widget owns the navigation and the cold-start case, where a tap
-/// launches the app and the route can only be pushed once the router has
-/// mounted.
+/// launches the app and the route can only be pushed once the session has
+/// been restored.
 class NotificationNavigator extends StatefulWidget {
   const NotificationNavigator({
     required this.notificationService,
     required this.router,
-    required this.tokenStorage,
+    required this.authBloc,
     required this.child,
     super.key,
   });
 
   final NotificationService notificationService;
   final GoRouter router;
-  final TokenStorage tokenStorage;
+  final AuthBloc authBloc;
   final Widget child;
 
   @override
@@ -38,9 +38,7 @@ class _NotificationNavigatorState extends State<NotificationNavigator> {
     super.initState();
     _subscription =
         widget.notificationService.conversationTaps.listen(_open);
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => unawaited(_openLaunchTarget()),
-    );
+    unawaited(_openLaunchTarget());
   }
 
   @override
@@ -56,9 +54,18 @@ class _NotificationNavigatorState extends State<NotificationNavigator> {
   }
 
   Future<void> _open(NotificationTarget target) async {
+    // On a cold start the session is still being restored, and the router
+    // sends every route to the splash screen until it settles — pushing
+    // before then would be silently swallowed.
+    if (widget.authBloc.state.status == AuthStatus.unknown) {
+      await widget.authBloc.stream.firstWhere(
+        (state) => state.status != AuthStatus.unknown,
+      );
+    }
+
     // A signed-out user would be redirected to login anyway, and pushing
     // first would leave the conversation stranded in the back stack.
-    if (!await widget.tokenStorage.hasTokens) return;
+    if (widget.authBloc.state.status != AuthStatus.authenticated) return;
 
     unawaited(
       widget.router.push(

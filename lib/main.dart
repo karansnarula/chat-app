@@ -50,7 +50,7 @@ class ChatApp extends StatelessWidget {
       child: NotificationNavigator(
         notificationService: getIt<NotificationService>(),
         router: router,
-        tokenStorage: getIt<TokenStorage>(),
+        authBloc: getIt<AuthBloc>(),
         child: MaterialApp.router(
           onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
           theme: AppTheme.light,

@@ -106,6 +106,45 @@ class SocketService {
     await connect();
   }
 
+  /// Sends a message and resolves with the stored copy the server
+  /// acknowledges.
+  ///
+  /// Sending goes over the socket because the backend only notifies the
+  /// recipient — realtime delivery and the push fallback alike — from its
+  /// gateway handler; a message stored over REST would reach nobody.
+  Future<Map<String, dynamic>> sendMessage({
+    required String conversationId,
+    required String content,
+  }) async {
+    final socket = _socket;
+    if (socket == null || !socket.connected) {
+      throw const SocketUnavailableException();
+    }
+
+    final completer = Completer<Map<String, dynamic>>();
+
+    socket.emitWithAck(
+      SocketEvents.messageSend,
+      {'conversationId': conversationId, 'content': content},
+      ack: (dynamic response) {
+        if (completer.isCompleted) return;
+        final json = _asJson(response);
+        if (json == null) {
+          completer.completeError(const SocketUnavailableException());
+        } else {
+          completer.complete(json);
+        }
+      },
+    );
+
+    // The gateway does not answer when its own handler throws, so an
+    // unanswered send must not hang the composer forever.
+    return completer.future.timeout(
+      AppSocketConfig.ackTimeout,
+      onTimeout: () => throw const SocketUnavailableException(),
+    );
+  }
+
   Future<bool> _ensureFreshToken() async {
     try {
       await _dio.get<dynamic>(ApiConstants.mePath);
@@ -155,4 +194,11 @@ class SocketService {
 abstract final class AppSocketConfig {
   static const int reconnectDelayMs = 1000;
   static const int reconnectDelayMaxMs = 10000;
+  static const Duration ackTimeout = Duration(seconds: 15);
+}
+
+/// Raised when a send cannot be delivered because the socket is down or
+/// the server never acknowledged it.
+class SocketUnavailableException implements Exception {
+  const SocketUnavailableException();
 }

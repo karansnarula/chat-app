@@ -1,5 +1,6 @@
 import 'package:chat_app/core/constants/api_constants.dart';
 import 'package:chat_app/core/error/api_guard.dart';
+import 'package:chat_app/core/error/app_exception.dart';
 import 'package:chat_app/core/error/result.dart';
 import 'package:chat_app/core/network/socket_service.dart';
 import 'package:chat_app/core/storage/token_storage.dart';
@@ -39,21 +40,25 @@ class ConversationRepositoryImpl implements ConversationRepository {
     };
   }
 
+  /// Sent over the socket rather than REST: the backend only notifies the
+  /// recipient from its gateway handler, so a message stored over REST
+  /// would never reach them.
   @override
   Future<Result<Message>> sendMessage({
     required String conversationId,
     required String content,
   }) async {
-    final result = await guard(
-      () => _api.sendMessage(
-        conversationId,
-        SendMessageBodyDto(content: content),
-      ),
-    );
-    return switch (result) {
-      Success(:final value) => Success(value.toEntity()),
-      Failure(:final exception) => Failure(exception),
-    };
+    try {
+      final json = await _socketService.sendMessage(
+        conversationId: conversationId,
+        content: content,
+      );
+      return Success(MessageDto.fromJson(json).toEntity());
+    } on SocketUnavailableException {
+      return const Failure(NetworkException());
+    } on Exception catch (error) {
+      return Failure(UnknownException(error.toString()));
+    }
   }
 
   @override

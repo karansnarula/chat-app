@@ -1,5 +1,6 @@
 /// Socket.io event names, matching the backend gateway.
 abstract final class SocketEvents {
+  static const String messageSend = 'message:send';
   static const String messageNew = 'message:new';
   static const String messageRead = 'message:read';
   static const String friendRequest = 'friend:request';
