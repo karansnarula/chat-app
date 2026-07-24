@@ -2,6 +2,7 @@ import 'package:chat_app/core/constants/api_constants.dart';
 import 'package:chat_app/core/error/api_guard.dart';
 import 'package:chat_app/core/error/app_exception.dart';
 import 'package:chat_app/core/error/result.dart';
+import 'package:chat_app/core/network/conversation_read_notifier.dart';
 import 'package:chat_app/core/network/socket_service.dart';
 import 'package:chat_app/core/storage/token_storage.dart';
 import 'package:chat_app/features/conversation/data/datasources/messages_api.dart';
@@ -16,11 +17,13 @@ class ConversationRepositoryImpl implements ConversationRepository {
     this._api,
     this._tokenStorage,
     this._socketService,
+    this._readNotifier,
   );
 
   final MessagesApi _api;
   final TokenStorage _tokenStorage;
   final SocketService _socketService;
+  final ConversationReadNotifier _readNotifier;
 
   @override
   Future<Result<MessagePage>> getMessages({
@@ -62,8 +65,13 @@ class ConversationRepositoryImpl implements ConversationRepository {
   }
 
   @override
-  Future<Result<void>> markAsRead(String conversationId) =>
-      guard(() => _api.markAsRead(conversationId));
+  Future<Result<void>> markAsRead(String conversationId) async {
+    final result = await guard(() => _api.markAsRead(conversationId));
+    // Let the chats list clear this thread's unread badge: the backend
+    // does not echo a read over the socket to the reader.
+    if (result is Success) _readNotifier.notifyRead();
+    return result;
+  }
 
   @override
   Future<String?> currentUserId() => _tokenStorage.readUserId();

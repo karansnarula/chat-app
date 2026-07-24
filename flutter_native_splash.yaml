@@ -1,0 +1,8 @@
+flutter_native_splash:
+  # Orange background; the icon's own orange square merges into it, leaving
+  # the white bubble centered.
+  color: "#F2760C"
+  image: assets/icon/app_icon.png
+  android_12:
+    color: "#F2760C"
+    image: assets/icon/app_icon.png

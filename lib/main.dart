@@ -57,6 +57,7 @@ class ChatApp extends StatelessWidget {
           buildWhen: (previous, current) =>
               previous.settings != current.settings,
           builder: (context, state) => MaterialApp.router(
+            debugShowCheckedModeBanner: false,
             onGenerateTitle: (context) =>
                 AppLocalizations.of(context).appTitle,
             theme: AppTheme.light,

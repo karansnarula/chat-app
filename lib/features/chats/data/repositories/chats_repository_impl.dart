@@ -1,6 +1,7 @@
 import 'package:async/async.dart' show StreamGroup;
 import 'package:chat_app/core/error/api_guard.dart';
 import 'package:chat_app/core/error/result.dart';
+import 'package:chat_app/core/network/conversation_read_notifier.dart';
 import 'package:chat_app/core/network/socket_service.dart';
 import 'package:chat_app/features/chats/data/datasources/chats_api.dart';
 import 'package:chat_app/features/chats/domain/entities/conversation.dart';
@@ -9,10 +10,11 @@ import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: ChatsRepository)
 class ChatsRepositoryImpl implements ChatsRepository {
-  const ChatsRepositoryImpl(this._api, this._socketService);
+  const ChatsRepositoryImpl(this._api, this._socketService, this._readNotifier);
 
   final ChatsApi _api;
   final SocketService _socketService;
+  final ConversationReadNotifier _readNotifier;
 
   @override
   Future<Result<List<Conversation>>> getConversations() async {
@@ -29,5 +31,6 @@ class ChatsRepositoryImpl implements ChatsRepository {
         _socketService.messages,
         _socketService.readReceipts,
         _socketService.reconnections,
+        _readNotifier.onRead,
       ]);
 }

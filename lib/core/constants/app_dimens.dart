@@ -32,7 +32,7 @@ abstract final class AppDimens {
 
   /// Navigation destination icons, sized up from [iconM] for legibility.
   static const double iconNav = 28;
-  static const double navBarHeight = 64;
+  static const double navBarHeight = 70;
   static const double unreadBadgeSize = 22;
   static const double pendingDotSize = 11;
   static const double bubbleMaxWidthFactor = 0.75;

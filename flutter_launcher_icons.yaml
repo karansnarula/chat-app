@@ -1,0 +1,8 @@
+flutter_launcher_icons:
+  image_path: "assets/icon/app_icon.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  # Adaptive icon for modern Android: white bubble on the brand orange.
+  adaptive_icon_background: "#F2760C"
+  adaptive_icon_foreground: "assets/icon/app_icon.png"

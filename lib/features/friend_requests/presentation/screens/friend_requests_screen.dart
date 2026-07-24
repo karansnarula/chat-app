@@ -57,13 +57,17 @@ class _FriendRequestsScreenState extends State<FriendRequestsScreen> {
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.friendRequests)),
-      floatingActionButton:
-          BlocSelector<FriendRequestsBloc, FriendRequestsState, bool>(
-        selector: (state) => state.isSending,
-        builder: (context, isSending) => FloatingActionButton.extended(
-          onPressed: isSending ? null : _openAddFriendDialog,
-          icon: const Icon(Icons.person_add_alt_1_rounded),
-          label: Text(l10n.addFriend),
+      // Lifted clear of the shell's floating navigation bar, which
+      // overlays this screen.
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: AppDimens.navBarClearance),
+        child: BlocSelector<FriendRequestsBloc, FriendRequestsState, bool>(
+          selector: (state) => state.isSending,
+          builder: (context, isSending) => FloatingActionButton.extended(
+            onPressed: isSending ? null : _openAddFriendDialog,
+            icon: const Icon(Icons.person_add_alt_1_rounded),
+            label: Text(l10n.addFriend),
+          ),
         ),
       ),
       body: BlocConsumer<FriendRequestsBloc, FriendRequestsState>(

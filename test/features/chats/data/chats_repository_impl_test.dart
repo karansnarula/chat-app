@@ -1,5 +1,6 @@
 import 'package:chat_app/core/error/app_exception.dart';
 import 'package:chat_app/core/error/result.dart';
+import 'package:chat_app/core/network/conversation_read_notifier.dart';
 import 'package:chat_app/core/network/socket_service.dart';
 import 'package:chat_app/features/chats/data/datasources/chats_api.dart';
 import 'package:chat_app/features/chats/data/models/conversation_dto.dart';
@@ -13,6 +14,11 @@ class MockChatsApi extends Mock implements ChatsApi {}
 
 class MockSocketService extends Mock implements SocketService {}
 
+class FakeReadNotifier extends Fake implements ConversationReadNotifier {
+  @override
+  Stream<void> get onRead => const Stream.empty();
+}
+
 void main() {
   late MockChatsApi api;
   late MockSocketService socketService;
@@ -21,7 +27,7 @@ void main() {
   setUp(() {
     api = MockChatsApi();
     socketService = MockSocketService();
-    repository = ChatsRepositoryImpl(api, socketService);
+    repository = ChatsRepositoryImpl(api, socketService, FakeReadNotifier());
   });
 
   test('maps DTOs to entities on success', () async {
